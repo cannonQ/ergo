@@ -3367,4 +3367,122 @@ class InputBlockProcessorSpecification extends ErgoCorePropertyTest with ErgoCom
 
   // todo : tests for digest state
 
+  property("PROBE C-3: re-delivered bodies with altered proofs do not replace a processed input block's txs") {
+    // Finding C-3: tx ids exclude spending proofs, so a second delivery of an already processed input block's
+    // bodies with one proof altered passes the digest check (InputBlocksProcessor.scala:961) and overwrites the
+    // shared tx cache (InputBlocksProcessor.scala:969-975). Expected RED at the pin (the altered copy is returned).
+    val bh = BoxHolder(Seq(eb1))
+    val us = UtxoState.fromBoxHolder(bh, None, createTempDir, settings, parameters)
+    val txs = validTransactionsFromBoxHolder(bh, new RandomWrapper(Some(1)), 201)._1
+
+    val h = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
+      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
+    val c1 = genChain(height = 2, history = h, stateOpt = Some(us)).toList
+    applyChain(h, c1)
+
+    val c2 = genChain(2, h, stateOpt = Some(us)).tail
+    val x = InputBlockAnnouncement(1, c2(0).header, InputBlockFields.empty, None)
+    withClue("setup: X processed with its original bodies: ") {
+      h.applyInputBlock(x) shouldBe None
+      h.applyInputBlockTransactions(x.id, txs, us) shouldBe (Seq(x.id) -> Seq.empty)
+    }
+
+    // T' = T with the first input's proof bytes altered, context extension kept
+    val t = txs.head
+    val in0 = t.inputs.head
+    val origProof = in0.spendingProof.proof
+    val alteredProof = if (origProof.isEmpty) Array[Byte](1) else origProof.updated(0, (origProof(0) ^ 1).toByte)
+    val tPrime = t.copy(inputs = t.inputs.updated(0, Input(in0.boxId, ProverResult(alteredProof, in0.spendingProof.extension))))
+    withClue("setup: T' has the same id as T and different proof bytes: ") {
+      tPrime.id shouldBe t.id
+      tPrime.inputs.head.spendingProof.proof.sameElements(origProof) shouldBe false
+    }
+
+    h.applyInputBlockTransactions(x.id, txs.updated(0, tPrime), us)
+
+    val retained = h.getInputBlockTransactions(x.id).get.head.inputs.head.spendingProof.proof
+    assert(retained.sameElements(origProof),
+      s"PROBE C-3: processed input block ${x.id} now serves altered proof bytes ${Algos.encode(retained)} " +
+        s"instead of the original ${Algos.encode(origProof)} for tx ${t.id}")
+    val collected = h.getBestOrderingCollectedInputBlocksTransactions().find(_.id == t.id).get.inputs.head.spendingProof.proof
+    assert(collected.sameElements(origProof), s"PROBE C-3: candidate prefix (CG:691) serves altered proof ${Algos.encode(collected)}")
+  }
+
+  property("PROBE C-6: sibling registration keeps the progress just made on the processed fork") {
+    // Finding C-6: in processInputBlockTransactions the sibling-registration loop rebuilds the tree from the
+    // original `forks` (InputBlocksProcessor.scala:658, and :628 in the switch branch), so the fork that was just
+    // processed is reset. Sequence: announce a, b (prev a), b' (prev a); deliver b's body, then a's.
+    // Expected RED at the pin: fork [a, b] is left unprocessed and the best chain is only [a].
+    val bh = BoxHolder(Seq(eb1))
+    val us = UtxoState.fromBoxHolder(bh, None, createTempDir, settings, parameters)
+    val tx1 = validTransactionsFromBoxHolder(bh, new RandomWrapper(Some(1)), 201)._1
+
+    val h = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
+      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
+    val c1 = genChain(height = 2, history = h, stateOpt = Some(us)).toList
+    applyChain(h, c1)
+
+    val a = InputBlockAnnouncement(1, genChain(2, h, stateOpt = Some(us)).tail.head.header, InputBlockFields.empty, None)
+    val b = InputBlockAnnouncement(1, genChain(2, h, stateOpt = Some(us)).tail.head.header, parentOnly(idToBytes(a.id)), None)
+    val b2 = InputBlockAnnouncement(1, genChain(2, h, stateOpt = Some(us)).tail.head.header, parentOnly(idToBytes(a.id)), None)
+    withClue("setup: a, b, b' announced, b's body arrives before a's: ") {
+      Seq(a, b, b2).foreach(ib => h.applyInputBlock(ib) shouldBe None)
+      h.applyInputBlockTransactions(b.id, Seq.empty, us) shouldBe (Seq.empty -> Seq.empty)
+      h.applyInputBlockTransactions(a.id, tx1, us) shouldBe (Seq(a.id, b.id) -> Seq.empty)
+    }
+
+    val forks = h.inputBlocksTree().get.forks
+    val forkA = forks.find(_.chain == Seq(a.id, b.id)).get
+    val forkB = forks.find(_.chain == Seq(a.id, b2.id)).get
+    assert(forkA.processedIndex == 1,
+      s"PROBE C-6: fork [a, b] was applied up to b but is stored with processedIndex ${forkA.processedIndex}")
+    assert(forkB.processedIndex == 0,
+      s"PROBE C-6: fork [a, b'] should be registered as processed up to a, got ${forkB.processedIndex}")
+    // bestInputBlocksChain() lists the best chain tip first
+    assert(h.bestInputBlocksChain() == Seq(b.id, a.id),
+      s"PROBE C-6: best input chain is ${h.bestInputBlocksChain()} after a and b were applied, expected Seq(b, a)")
+  }
+
+  property("PROBE C-7: switching between root-sibling forks rolls back the abandoned processed chain") {
+    // Finding C-7: when the forks share no processed block, commonIdx stays -1 and the rollback list is
+    // empty (InputBlocksProcessor.scala:590), so the abandoned chain is never rolled back.
+    // Expected RED at the pin: the rollback list is Seq.empty instead of Seq(a, b).
+    val bh = BoxHolder(Seq(eb1))
+    val us = UtxoState.fromBoxHolder(bh, None, createTempDir, settings, parameters)
+    val tx1 = validTransactionsFromBoxHolder(bh, new RandomWrapper(Some(1)), 201)._1
+
+    val h = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
+      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
+    val c1 = genChain(height = 2, history = h, stateOpt = Some(us)).toList
+    applyChain(h, c1)
+
+    def nextHeader = genChain(2, h, stateOpt = Some(us)).tail.head.header
+    val a = InputBlockAnnouncement(1, nextHeader, InputBlockFields.empty, None)
+    val b = InputBlockAnnouncement(1, nextHeader, parentOnly(idToBytes(a.id)), None)
+    withClue("setup: fork [a, b] processed: ") {
+      h.applyInputBlock(a) shouldBe None
+      h.applyInputBlock(b) shouldBe None
+      h.applyInputBlockTransactions(a.id, tx1, us) shouldBe (Seq(a.id) -> Seq.empty)
+      h.applyInputBlockTransactions(b.id, Seq.empty, us) shouldBe (Seq(b.id) -> Seq.empty)
+      h.bestInputBlocksChain() shouldBe Seq(b.id, a.id)
+    }
+
+    // second root x (no previous input block) and its longer chain x <- y <- z
+    val x = InputBlockAnnouncement(1, nextHeader, InputBlockFields.empty, None)
+    val y = InputBlockAnnouncement(1, nextHeader, parentOnly(idToBytes(x.id)), None)
+    val z = InputBlockAnnouncement(1, nextHeader, parentOnly(idToBytes(y.id)), None)
+    withClue("setup: x, y bodies stored without a switch: ") {
+      Seq(x, y, z).foreach(ib => h.applyInputBlock(ib) shouldBe None)
+      h.applyInputBlockTransactions(x.id, Seq.empty, us) shouldBe (Seq.empty -> Seq.empty)
+      h.applyInputBlockTransactions(y.id, Seq.empty, us) shouldBe (Seq.empty -> Seq.empty)
+    }
+
+    val (forward, rollback) = h.applyInputBlockTransactions(z.id, Seq.empty, us)
+    withClue("setup: z's body triggers the switch to [x, y, z]: ") {
+      forward shouldBe Seq(x.id, y.id, z.id)
+    }
+    assert(rollback == Seq(a.id, b.id),
+      s"PROBE C-7: switch from [a, b] to [x, y, z] returned rollback list $rollback, expected Seq(a, b)")
+  }
+
 }

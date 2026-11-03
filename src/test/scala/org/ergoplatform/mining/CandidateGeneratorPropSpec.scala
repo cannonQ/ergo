@@ -3,14 +3,20 @@ package org.ergoplatform.mining
 import org.ergoplatform.ErgoTreePredef
 import org.ergoplatform.modifiers.mempool.{ErgoTransaction, UnconfirmedTransaction}
 import org.ergoplatform.nodeView.history.ErgoHistoryUtils._
-import org.ergoplatform.nodeView.state.ErgoStateContext
-import org.ergoplatform.settings.MonetarySettings
+import org.ergoplatform.nodeView.state.{ErgoStateContext, UtxoState, VotingData}
+import org.ergoplatform.nodeView.state.StateType
+import org.ergoplatform.subblocks.InputBlockAnnouncement
+import org.ergoplatform.utils.HistoryTestHelpers.generateHistory
+import org.ergoplatform.utils.generators.ChainGenerator.{applyChain, genChain}
+import org.ergoplatform.settings.{Algos, MonetarySettings, Parameters}
 import org.ergoplatform.utils.{BoxUtils, ErgoCorePropertyTest, RandomWrapper}
 import org.ergoplatform.wallet.interpreter.ErgoInterpreter
 import org.ergoplatform.{ErgoBoxCandidate, Input}
 import org.ergoplatform.modifiers.mempool.ErgoTransaction
 import org.scalacheck.Gen
-import scorex.util.{ModifierId, bytesToId}
+import scorex.crypto.authds.merkle.BatchMerkleProof
+import scorex.crypto.hash.Digest32
+import scorex.util.{ModifierId, bytesToId, idToBytes}
 import sigma.data.ProveDlog
 
 
@@ -744,6 +750,125 @@ class CandidateGeneratorPropSpec extends ErgoCorePropertyTest {
 
     // At least one double-spend should be in invalid list (result._3)
     result._3.length should be >= 1
+  }
+
+  property("PROBE C-2: input-chain prefix plus the candidate's new txs stay within maxBlockCost") {
+    // Finding C-2: createCandidate hands collectTxs the full maxBlockCost - safeGap (CandidateGenerator.scala:786-789)
+    // although the ordering block commits previousOrderingBlockTransactions ++ new txs (CandidateGenerator.scala:882).
+    // Observable chosen: createCandidate called directly (no actors). The accepted prefix is one processed input
+    // block on the best ordering block, read back at CandidateGenerator.scala:691. The candidate's new first-class
+    // txs (candidateBlock.inputBlockTransactions) extend that input chain, and the next ordering block commits
+    // prefix ++ them, so the claim is checked as cost(prefix) + cost(new txs) <= maxBlockCost.
+    // maxBlockCost is lowered to 100000 (safeGap is 0 below 1000000, CandidateGenerator.scala:773-779) so that
+    // 0.9 x maxBlockCost takes only a handful of simple txs. Expected RED at the pin (about 1.8 x).
+    val params   = parameters.withBlockCost(100000)
+    val limit    = params.maxBlockCost.toLong
+    val bh       = boxesHolderGen.sample.get
+    val rnd      = new RandomWrapper
+    val us       = createUtxoState(bh, params)
+    val minValue = BoxUtils.sufficientAmount(parameters)
+    val ctx      = us.stateContext.simplifiedUpcoming()
+    def cost(txs: Seq[ErgoTransaction]): Long =
+      txs.map(tx => us.validateWithCost(tx, ctx, Int.MaxValue, Some(verifier), true).get.toLong).sum
+    val allTxs = bh.boxes.values.toIndexedSeq.filter(_.value >= minValue * 2).take(100)
+      .map(i => validTransactionFromBoxes(IndexedSeq(i), rnd, issueNew = false))
+    // longest run of txs whose summed cost stays within 0.9 x maxBlockCost
+    def fill(txs: Seq[ErgoTransaction]): Seq[ErgoTransaction] =
+      txs.zip(txs.scanLeft(0L)((acc, tx) => acc + cost(Seq(tx))).tail).takeWhile(_._2 <= limit * 9 / 10).map(_._1)
+    val prefix = fill(allTxs)
+    val pool   = fill(allTxs.drop(prefix.size))
+
+    val hist = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
+      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
+    applyChain(hist, genChain(2, hist, stateOpt = Some(us)))
+    val ib = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us)).tail.head.header, InputBlockFields.empty, None)
+    withClue("setup: prefix input block processed on the best ordering block: ") {
+      hist.applyInputBlock(ib) shouldBe None
+      hist.applyInputBlockTransactions(ib.id, prefix, us) shouldBe (Seq(ib.id) -> Seq.empty)
+      hist.getBestOrderingCollectedInputBlocksTransactions().map(_.id) shouldBe prefix.map(_.id)
+      cost(prefix) should be > limit / 2
+      cost(pool) should be > limit / 2
+    }
+
+    val (candidate, _) = CandidateGenerator.createCandidate(defaultMinerPk, hist, emptyVSUpdate, us,
+      pool.map(tx => UnconfirmedTransaction(tx, None)), None, Seq.empty, settings).get
+    val newTxs = candidate.candidateBlock.inputBlockTransactions ++ candidate.candidateBlock.orderingBlockTransactions
+    val total  = cost(prefix) + cost(newTxs)
+    assert(total <= limit,
+      s"PROBE C-2: input-chain prefix cost ${cost(prefix)} + new candidate txs cost ${cost(newTxs)} = $total " +
+        s"exceeds maxBlockCost $limit; collectTxs was budgeted without the prefix")
+  }
+
+  property("PROBE C-12: candidate input-block PoW parameters equal the follower's mid-epoch table") {
+    // CG:879 puts upcomingContext.currentParameters into Candidate (read for the input PoW band, CG:274-275);
+    // upcoming() applies a passed vote mid-epoch (ESC:134); followers use stateContext.currentParameters (ENVS:1575).
+    val bh  = boxesHolderGen.sample.get
+    val us0 = createUtxoState(bh, parameters)
+    val sc0 = us0.stateContext
+    val votingLength = sc0.chainSettings.voting.votingLength
+    val voted = new ErgoStateContext(sc0.lastHeaders, sc0.lastExtensionOpt, sc0.genesisStateDigest,
+      sc0.currentParameters, sc0.validationSettings,
+      VotingData(Array(Parameters.SubblocksPerBlockIncrease -> (votingLength / 2 + 1))))(sc0.chainSettings)
+    val us = new UtxoState(us0.persistentProver, us0.version, us0.store, settings) {
+      override def stateContext: ErgoStateContext = voted
+    }
+    val box = bh.boxes.values.find(_.value >= BoxUtils.sufficientAmount(parameters) * 2).get
+    val prefixTx = validTransactionFromBoxes(IndexedSeq(box), new RandomWrapper, issueNew = false)
+    val hist = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
+      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
+    applyChain(hist, genChain(2, hist, stateOpt = Some(us0)))
+    val ib = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us0)).tail.head.header, InputBlockFields.empty, None)
+    withClue("setup: one processed input block (non-empty prefix), mid-epoch, vote passed: ") {
+      hist.applyInputBlock(ib) shouldBe None
+      hist.applyInputBlockTransactions(ib.id, Seq(prefixTx), us0) shouldBe (Seq(ib.id) -> Seq.empty)
+      (hist.bestFullBlockOpt.get.height + 1) % votingLength should not be 0
+      (heightOf(voted.lastHeaderOpt) + 1) % votingLength should not be 0
+      voted.currentParameters.subBlocksPerBlockOpt shouldBe defined
+    }
+    val (candidate, _) = CandidateGenerator.createCandidate(defaultMinerPk, hist, emptyVSUpdate, us,
+      Seq.empty, None, Seq.empty, settings).get
+    assert(candidate.parameters.subBlocksPerBlock == voted.currentParameters.subBlocksPerBlock,
+      s"PROBE C-12: miner's input PoW uses subBlocksPerBlock ${candidate.parameters.subBlocksPerBlock}, " +
+        s"followers use ${voted.currentParameters.subBlocksPerBlock}")
+  }
+
+  property("PROBE C-2b: follower rejects an input chain whose prefix plus new body exceeds maxBlockCost") {
+    // Follower half of C-2, same fixture as PROBE C-2 (duplicated, no state shared across properties).
+    val params   = parameters.withBlockCost(100000)
+    val limit    = params.maxBlockCost.toLong
+    val bh       = boxesHolderGen.sample.get
+    val rnd      = new RandomWrapper
+    val us       = createUtxoState(bh, params)
+    val minValue = BoxUtils.sufficientAmount(parameters)
+    val ctx      = us.stateContext.simplifiedUpcoming()
+    def cost(txs: Seq[ErgoTransaction]): Long =
+      txs.map(tx => us.validateWithCost(tx, ctx, Int.MaxValue, Some(verifier), true).get.toLong).sum
+    val allTxs = bh.boxes.values.toIndexedSeq.filter(_.value >= minValue * 2).take(100)
+      .map(i => validTransactionFromBoxes(IndexedSeq(i), rnd, issueNew = false))
+    // longest run of txs whose summed cost stays within 0.9 x maxBlockCost
+    def fill(txs: Seq[ErgoTransaction]): Seq[ErgoTransaction] =
+      txs.zip(txs.scanLeft(0L)((acc, tx) => acc + cost(Seq(tx))).tail).takeWhile(_._2 <= limit * 9 / 10).map(_._1)
+    val prefix = fill(allTxs)
+    val pool   = fill(allTxs.drop(prefix.size))
+
+    val hist = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
+      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
+    applyChain(hist, genChain(2, hist, stateOpt = Some(us)))
+    val ib = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us)).tail.head.header, InputBlockFields.empty, None)
+    withClue("setup: prefix input block processed on the best ordering block: ") {
+      hist.applyInputBlock(ib) shouldBe None
+      hist.applyInputBlockTransactions(ib.id, prefix, us) shouldBe (Seq(ib.id) -> Seq.empty)
+      hist.getBestOrderingCollectedInputBlocksTransactions().map(_.id) shouldBe prefix.map(_.id)
+      cost(prefix) should be > limit / 2
+      cost(pool) should be > limit / 2
+    }
+
+    val ib2 = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us)).tail.head.header,
+      new InputBlockFields(Some(idToBytes(ib.id)), Digest32 @@ Array.fill(32)(0.toByte), Digest32 @@ Array.fill(32)(0.toByte),
+        BatchMerkleProof(Seq.empty, Seq.empty)(Algos.hash)), None)
+    hist.applyInputBlock(ib2) shouldBe None
+    val (fwd, _) = hist.applyInputBlockTransactions(ib2.id, pool, us)
+    assert(fwd.isEmpty, s"PROBE C-2b: input chain accepted at cost ${cost(prefix) + cost(pool)} > $limit")
   }
 
 }

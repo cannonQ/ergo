@@ -629,4 +629,35 @@ class UtxoStateSpecification extends ErgoCorePropertyTest with OptionValues {
     nipopowAlgos.interlinksToExtension(nipopowAlgos.updateInterlinks(sc.lastHeaderOpt, sc.lastExtensionOpt)).toExtension(header.id)
   }
 
+  property("PROBE C-1: input-block tx with outputs at creationHeight = currentHeight + 1 is accepted") {
+    // Finding C-1: UtxoState.applyInputBlock (UtxoState.scala:316) validates input-block txs against
+    // stateContext, whose height is the parent ordering block's (h), while the mempool, the miner and the
+    // ordering block itself validate at h + 1. An output at creationHeight h + 1 then fails txFuture
+    // (ErgoTransaction.scala:188). Expected RED at the pin; GREEN once input blocks validate at h + 1.
+    val boxA = testBox(1000000000L, TrueTree, 0, boxIndex = 0)
+    val boxB = testBox(1000000000L, TrueTree, 0, boxIndex = 1)
+    val us0 = createUtxoState(BoxHolder(Seq(boxA, boxB)), parameters)
+    val genesisTx = ErgoTransaction(IndexedSeq(Input(boxA.id, emptyProverResult)), IndexedSeq(),
+      IndexedSeq(new ErgoBoxCandidate(boxA.value, TrueTree, creationHeight = 0)))
+    val genesis = validFullBlock(parentOpt = None, us0, Seq(genesisTx))
+    val us = us0.applyModifier(genesis, None)(_ => ()).get
+    withClue("setup: state is at the genesis ordering block: ") {
+      us.stateContext.lastHeaderOpt.map(_.id) shouldBe Some(genesis.header.id)
+    }
+    val h = us.stateContext.currentHeight
+
+    // TRUE-proposition input, so no signature is needed; the only output is created at h + 1
+    val tx = ErgoTransaction(IndexedSeq(Input(boxB.id, emptyProverResult)), IndexedSeq(),
+      IndexedSeq(new ErgoBoxCandidate(boxB.value, TrueTree, creationHeight = h + 1)))
+    // input block on top of the genesis ordering block, i.e. at height h + 1
+    val header = defaultHeaderGen.sample.value.copy(height = h + 1, parentId = genesis.header.id)
+
+    val res = us.applyInputBlock(Seq(tx), Seq.empty, header)
+    assert(res.isSuccess,
+      s"PROBE C-1: input block at height ${h + 1} rejected a tx whose output has creationHeight ${h + 1}; " +
+        s"applyInputBlock validated at stateContext.currentHeight = $h: " +
+        s"${res.failed.map(_.getMessage).getOrElse("")}")
+    us.closeStorage()
+  }
+
 }

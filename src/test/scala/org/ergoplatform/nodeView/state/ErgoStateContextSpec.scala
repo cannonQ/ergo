@@ -189,4 +189,31 @@ class ErgoStateContextSpec extends ErgoCorePropertyTest {
       .foreach { case (a, b) => a.toArray shouldEqual b.toArray }
   }
 
+  // Root/side-note probe (ESC:134 applies passed votes mid-epoch; pre-existing on master). Not the C-12 gate; see CandidateGeneratorPropSpec.
+  property("PROBE C-12-ESC: mid-epoch upcoming() keeps the current epoch's subBlocksPerBlock") {
+    // Finding C-12: the miner checks input-block PoW with upcoming().currentParameters (CandidateGenerator.scala:879),
+    // and upcoming() applies a passed vote at any height (ErgoStateContext.scala:134 -> Parameters.scala:88), while
+    // followers use stateContext.currentParameters (ErgoNodeViewSynchronizer.scala:1575), which change only at an
+    // epoch start. Expected RED at the pin: upcoming() returns current + 1 mid-epoch (65 vs 64 with test defaults).
+    val chain = genChain(3)
+    val sc = chain.init.foldLeft[ErgoStateContext](emptyStateContext) { (acc, fb) => acc.appendFullBlock(fb).get }
+    val next = chain.last.header
+    val votingLength = sc.chainSettings.voting.votingLength
+    withClue("setup: next block is mid-epoch and parameter 9 is in the table: ") {
+      next.height % votingLength should not be 0
+      sc.currentParameters.subBlocksPerBlockOpt shouldBe defined
+    }
+    // epoch votes for SubblocksPerBlockIncrease past the approval threshold (VotingSettings.changeApproved)
+    val passedVote = VotingData(Array(SubblocksPerBlockIncrease -> (votingLength / 2 + 1)))
+    val ctx = new ErgoStateContext(sc.lastHeaders, sc.lastExtensionOpt, sc.genesisStateDigest,
+      sc.currentParameters, sc.validationSettings, passedVote)(sc.chainSettings)
+
+    val upcomingK = ctx.upcoming(next.minerPk, next.timestamp, next.nBits, next.votes,
+      ErgoValidationSettingsUpdate.empty, next.version).currentParameters.subBlocksPerBlock
+    val currentK = ctx.currentParameters.subBlocksPerBlock
+    assert(upcomingK == currentK,
+      s"PROBE C-12-ESC: at mid-epoch height ${next.height} upcoming() gives subBlocksPerBlock $upcomingK, " +
+        s"followers keep the epoch's $currentK")
+  }
+
 }
