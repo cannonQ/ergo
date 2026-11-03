@@ -1,0 +1,42 @@
+UTC time of first query: 2026-11-03T18:02:26Z ; source: local node http://127.0.0.1:9053 (GET only)
+Commands:
+ curl -s http://127.0.0.1:9053/info
+ curl -s http://127.0.0.1:9053/blocks/lastHeaders/1
+ curl -s http://127.0.0.1:9053/blocks/at/1908736
+ curl -s http://127.0.0.1:9053/blocks/10dad5a4...ecaf/header ; curl -s http://127.0.0.1:9053/blocks/10dad5a4...ecaf  (extension)
+
+/info (relevant): appVersion 6.1.7, fullHeight 1908866, headersHeight 1908866, network mainnet,
+ bestHeaderId c6ea75baa64f762c12328dd9f8004663e042678b08e8a6f4afc53d5d74cdfb33
+ "parameters": {"outputCost":298,"tokenAccessCost":100,"maxBlockCost":8001091,"height":1908736,"maxBlockSize":1271009,
+   "dataInputCost":100,"blockVersion":4,"inputCost":2407,"storageFeeFactor":1250000,"subblocksPerBlock":30,"minValuePerByte":360}
+
+lastHeaders/1: height 1908866, version 4, id c6ea75baa64f762c12328dd9f8004663e042678b08e8a6f4afc53d5d74cdfb33, timestamp 1793728882253
+
+Epoch start: 1908866 - (1908866 % 1024) = 1908736 ; id 10dad5a402c7064aaee9bd3b9b7a06b1a5bb2fba1362f64bd12973a95da1ecaf
+header: version 4, height 1908736, extensionHash 70543e89652521a3c3bd0235d7d336505ebdef8fe7dd67ee1a40d624df2d39a3
+
+extension.fields (key -> value), verbatim:
+ 0005 00000064
+ 0001 001312d0
+ 0006 00000967
+ 0009 0000001e
+ 0002 00000168
+ 0007 00000064
+ 0003 001364e1
+ 007b 00000004
+ 0008 0000012a
+ 0004 007a1643
+ 007c 02d701990300
+ 0100 01b0244dfc267baca974a4caee06120321562784303a8a688976ae56170e4d175b
+ 0101 0423e64616911973ff14480fe295ba32902dc426449b116df38fd46ef6de3d4093
+ 0105 0111347ec5b40da38d465f2f174e375b1d470f9a0f7f7d732fcecba8f45cf21b92
+ 0106 023acfee1aaf7db971990cf5e67c8a4a97dac64a4fec63d23ead17b9e880991289
+ 0108 02f851f3a499eb1e60dcc4d561670cdbcec836bdb8029afcaf3eff332efa7e0feb
+ 010a 025f99e2f1a58b046c64437f5c53db689b31cf81a885f6e691eae9c84d5013eb20
+ 010c 031720bb98327e52e1add1cd51916b51363d1c3768d3c61a2374c2a52f2d0924c4
+ 010f 028fd51d51a683b06334ce687d2c9846c799e81f2b804b382a5a8b6ab1d45271f2
+ 0111 01893e22554f1a12457b2fe7719d72e94429c539d243cfbe6705b55a8958d6fea9
+ 0112 03847ae9df6707bae007215aa8fdf7d78a9dad2d50dbabda46e5a8e777849007b3
+ 0200 02d70199030307010311080103120b010310
+Decimal: 0009 = 0x1e = 30 ; 007b = 4.
+Key 007c (id 124) = 02d701990300. My own decoding (NOT from the node): ULEB128 count 2, ids 215 (d701) and 409 (9903), trailing 00.

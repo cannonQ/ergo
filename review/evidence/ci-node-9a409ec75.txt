@@ -1,0 +1,37 @@
+CI evidence (read from GitHub Actions logs via gh api; nothing was run locally)
+Job: "Run node tests (ubuntu-latest, 2.12.20, adopt@1.8)", ergo PR #2055 (branch weak-blocks)
+
+RUN 41653486275, job 125977519824
+- Conclusion: failure. Started 2026-11-03T14:25:12Z, completed 15:34:23Z.
+- Checked out refs/remotes/pull/2055/merge: "HEAD is now at 3ce69fde2 Merge 9a409ec75f48d822d12bc7bdf3db031ca21af87e into c1a69f65df2228ce26b7d1c2360b472ef79fc55c" (raw log line 498)
+- Step "Runs node tests" has NO conclusion (never finished); the post steps also have none.
+- *** FAILED *** lines (raw log line : spec :: test):
+  12995   ErgoMinerSpec :: should not include too costly transactions
+  12998   ErgoMinerSpec :: should not freeze while mempool is full
+  13001   ErgoMinerSpec :: should include only one transaction from 2 spending the same box
+  13020   ErgoMinerSpec :: should include mandatory transactions
+  18604   InputBlockWalletSpec :: boxes created in input blocks can be spent in subsequent blocks
+  18621   InputBlockWalletSpec :: scanInputBlock with multiple transactions
+  18662   InputBlockWalletSpec :: LocallyGeneratedInputBlock updates wallet state
+  18671   InputBlockWalletSpec :: wallet tracks boxes from input block before ordering block confirmation
+  25294   ErgoNodeViewHolderSpec :: ProcessInputBlock uses pre-existing transactions from history - State: utxo, Verify Transactions: true, PoPoW Bootstrap: true, UTXO Bootstrap: false
+  25625   ErgoNodeViewHolderSpec :: ProcessInputBlock uses pre-existing transactions from history - State: utxo, Verify Transactions: true, PoPoW Bootstrap: false, UTXO Bootstrap: false
+  26601   CandidateGeneratorSpec :: should let multiple miners compete
+  921634  CandidateGeneratorSpec :: should cache candidate until newly mined block is applied
+  2908675 CandidateGeneratorSpec :: should accept solution for previous candidate after regeneration
+  (13 distinct; no duplicates. Spec name = nearest preceding "[info] <Name>:" header in the log, attributed by script.)
+- Totals: no "Tests: succeeded N, failed M" line present (0 matches). No ScalaTest run summary.
+- Ending mode: NOT a clean test summary. Runner shutdown signal at log line 2274283 (14:50:02Z):
+  "##[error]The runner has received a shutdown signal. This can happen when the runner service is stopped, or a manually started runner is canceled."
+  Log then ends at 14:50:31Z (line 3306810) in repeated NoSuchElementException stack traces (LDBVersionedStore.apply -> VersionedLDBAVLStorage.fetch -> ProxyInternalProverNode.right -> BatchAVLProver.unauthenticatedLookup). Last meaningful lines:
+    3306794 [default-critical-dispatcher-9] >> [ERROR] o.e.mining.CandidateGenerator >> 14:45:51.970 Attempted candidate generator restart due to null
+    3306795 java.util.NoSuchElementException: null
+    3306810 (last line) at ...PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+  Runner loss / cancel, not OOM or a stated timeout (no OutOfMemory / timeout text found). Job object completed ~44 min after the last log line.
+
+RUN 38429005834, job 115405919208 (head 214d09cba633a5b709ccd43e3bc5ea049fd71739)
+- Conclusion: failure (2026-10-13T16:15:33Z to 17:27:06Z). Checkout: "Merge 214d09cba... into c1a69f65df2228ce26b7d1c2360b472ef79fc55c" (HEAD 032756fad, raw line 486).
+- *** FAILED ***: ErgoMinerSpec x4 (same four tests as above, lines 12464, 12467, 12470, 12489); CandidateGeneratorSpec "should let multiple miners compete" (25748) and "should cache candidate until newly mined block is applied" (1937372). 6 total.
+- No "Tests: succeeded" line. Same ending: runner shutdown signal at line 3027799 (16:43:46Z), log ends in NoSuchElementException traces (line 4040338).
+
+COMPARISON: DIFFERENT. New run = old 6 + 7 more: InputBlockWalletSpec x4, ErgoNodeViewHolderSpec x2 (ProcessInputBlock ... PoPoW Bootstrap true/false), CandidateGeneratorSpec "should accept solution for previous candidate after regeneration". Both runs died the same way (runner shutdown signal, no totals), so failure sets are partial in both.

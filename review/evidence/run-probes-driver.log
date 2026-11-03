@@ -1,0 +1,9 @@
+=== UtxoStateSpecification start 2026-11-03T15:17:38-06:00
+=== UtxoStateSpecification exit 1 2026-11-03T15:17:58-06:00
+=== InputBlockProcessorSpecification start 2026-11-03T15:17:58-06:00
+=== InputBlockProcessorSpecification exit 1 2026-11-03T15:18:12-06:00
+=== ErgoStateContextSpec start 2026-11-03T15:18:12-06:00
+=== ErgoStateContextSpec exit 1 2026-11-03T15:18:21-06:00
+=== CandidateGeneratorPropSpec start 2026-11-03T15:18:21-06:00
+=== CandidateGeneratorPropSpec exit 1 2026-11-03T15:18:31-06:00
+=== ALL DONE 2026-11-03T15:18:31-06:00

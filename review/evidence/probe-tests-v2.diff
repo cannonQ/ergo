@@ -1,0 +1,355 @@
+diff --git a/src/test/scala/org/ergoplatform/mining/CandidateGeneratorPropSpec.scala b/src/test/scala/org/ergoplatform/mining/CandidateGeneratorPropSpec.scala
+index 2558d9fd8..921ccedcf 100644
+--- a/src/test/scala/org/ergoplatform/mining/CandidateGeneratorPropSpec.scala
++++ b/src/test/scala/org/ergoplatform/mining/CandidateGeneratorPropSpec.scala
+@@ -3,14 +3,20 @@ package org.ergoplatform.mining
+ import org.ergoplatform.ErgoTreePredef
+ import org.ergoplatform.modifiers.mempool.{ErgoTransaction, UnconfirmedTransaction}
+ import org.ergoplatform.nodeView.history.ErgoHistoryUtils._
+-import org.ergoplatform.nodeView.state.ErgoStateContext
+-import org.ergoplatform.settings.MonetarySettings
++import org.ergoplatform.nodeView.state.{ErgoStateContext, UtxoState, VotingData}
++import org.ergoplatform.nodeView.state.StateType
++import org.ergoplatform.subblocks.InputBlockAnnouncement
++import org.ergoplatform.utils.HistoryTestHelpers.generateHistory
++import org.ergoplatform.utils.generators.ChainGenerator.{applyChain, genChain}
++import org.ergoplatform.settings.{Algos, MonetarySettings, Parameters}
+ import org.ergoplatform.utils.{BoxUtils, ErgoCorePropertyTest, RandomWrapper}
+ import org.ergoplatform.wallet.interpreter.ErgoInterpreter
+ import org.ergoplatform.{ErgoBoxCandidate, Input}
+ import org.ergoplatform.modifiers.mempool.ErgoTransaction
+ import org.scalacheck.Gen
+-import scorex.util.{ModifierId, bytesToId}
++import scorex.crypto.authds.merkle.BatchMerkleProof
++import scorex.crypto.hash.Digest32
++import scorex.util.{ModifierId, bytesToId, idToBytes}
+ import sigma.data.ProveDlog
+ 
+ 
+@@ -746,4 +752,123 @@ class CandidateGeneratorPropSpec extends ErgoCorePropertyTest {
+     result._3.length should be >= 1
+   }
+ 
++  property("PROBE C-2: input-chain prefix plus the candidate's new txs stay within maxBlockCost") {
++    // Finding C-2: createCandidate hands collectTxs the full maxBlockCost - safeGap (CandidateGenerator.scala:786-789)
++    // although the ordering block commits previousOrderingBlockTransactions ++ new txs (CandidateGenerator.scala:882).
++    // Observable chosen: createCandidate called directly (no actors). The accepted prefix is one processed input
++    // block on the best ordering block, read back at CandidateGenerator.scala:691. The candidate's new first-class
++    // txs (candidateBlock.inputBlockTransactions) extend that input chain, and the next ordering block commits
++    // prefix ++ them, so the claim is checked as cost(prefix) + cost(new txs) <= maxBlockCost.
++    // maxBlockCost is lowered to 100000 (safeGap is 0 below 1000000, CandidateGenerator.scala:773-779) so that
++    // 0.9 x maxBlockCost takes only a handful of simple txs. Expected RED at the pin (about 1.8 x).
++    val params   = parameters.withBlockCost(100000)
++    val limit    = params.maxBlockCost.toLong
++    val bh       = boxesHolderGen.sample.get
++    val rnd      = new RandomWrapper
++    val us       = createUtxoState(bh, params)
++    val minValue = BoxUtils.sufficientAmount(parameters)
++    val ctx      = us.stateContext.simplifiedUpcoming()
++    def cost(txs: Seq[ErgoTransaction]): Long =
++      txs.map(tx => us.validateWithCost(tx, ctx, Int.MaxValue, Some(verifier), true).get.toLong).sum
++    val allTxs = bh.boxes.values.toIndexedSeq.filter(_.value >= minValue * 2).take(100)
++      .map(i => validTransactionFromBoxes(IndexedSeq(i), rnd, issueNew = false))
++    // longest run of txs whose summed cost stays within 0.9 x maxBlockCost
++    def fill(txs: Seq[ErgoTransaction]): Seq[ErgoTransaction] =
++      txs.zip(txs.scanLeft(0L)((acc, tx) => acc + cost(Seq(tx))).tail).takeWhile(_._2 <= limit * 9 / 10).map(_._1)
++    val prefix = fill(allTxs)
++    val pool   = fill(allTxs.drop(prefix.size))
++
++    val hist = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
++      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
++    applyChain(hist, genChain(2, hist, stateOpt = Some(us)))
++    val ib = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us)).tail.head.header, InputBlockFields.empty, None)
++    withClue("setup: prefix input block processed on the best ordering block: ") {
++      hist.applyInputBlock(ib) shouldBe None
++      hist.applyInputBlockTransactions(ib.id, prefix, us) shouldBe (Seq(ib.id) -> Seq.empty)
++      hist.getBestOrderingCollectedInputBlocksTransactions().map(_.id) shouldBe prefix.map(_.id)
++      cost(prefix) should be > limit / 2
++      cost(pool) should be > limit / 2
++    }
++
++    val (candidate, _) = CandidateGenerator.createCandidate(defaultMinerPk, hist, emptyVSUpdate, us,
++      pool.map(tx => UnconfirmedTransaction(tx, None)), None, Seq.empty, settings).get
++    val newTxs = candidate.candidateBlock.inputBlockTransactions ++ candidate.candidateBlock.orderingBlockTransactions
++    val total  = cost(prefix) + cost(newTxs)
++    assert(total <= limit,
++      s"PROBE C-2: input-chain prefix cost ${cost(prefix)} + new candidate txs cost ${cost(newTxs)} = $total " +
++        s"exceeds maxBlockCost $limit; collectTxs was budgeted without the prefix")
++  }
++
++  property("PROBE C-12: candidate input-block PoW parameters equal the follower's mid-epoch table") {
++    // CG:879 puts upcomingContext.currentParameters into Candidate (read for the input PoW band, CG:274-275);
++    // upcoming() applies a passed vote mid-epoch (ESC:134); followers use stateContext.currentParameters (ENVS:1575).
++    val bh  = boxesHolderGen.sample.get
++    val us0 = createUtxoState(bh, parameters)
++    val sc0 = us0.stateContext
++    val votingLength = sc0.chainSettings.voting.votingLength
++    val voted = new ErgoStateContext(sc0.lastHeaders, sc0.lastExtensionOpt, sc0.genesisStateDigest,
++      sc0.currentParameters, sc0.validationSettings,
++      VotingData(Array(Parameters.SubblocksPerBlockIncrease -> (votingLength / 2 + 1))))(sc0.chainSettings)
++    val us = new UtxoState(us0.persistentProver, us0.version, us0.store, settings) {
++      override def stateContext: ErgoStateContext = voted
++    }
++    val box = bh.boxes.values.find(_.value >= BoxUtils.sufficientAmount(parameters) * 2).get
++    val prefixTx = validTransactionFromBoxes(IndexedSeq(box), new RandomWrapper, issueNew = false)
++    val hist = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
++      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
++    applyChain(hist, genChain(2, hist, stateOpt = Some(us0)))
++    val ib = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us0)).tail.head.header, InputBlockFields.empty, None)
++    withClue("setup: one processed input block (non-empty prefix), mid-epoch, vote passed: ") {
++      hist.applyInputBlock(ib) shouldBe None
++      hist.applyInputBlockTransactions(ib.id, Seq(prefixTx), us0) shouldBe (Seq(ib.id) -> Seq.empty)
++      (hist.bestFullBlockOpt.get.height + 1) % votingLength should not be 0
++      (heightOf(voted.lastHeaderOpt) + 1) % votingLength should not be 0
++      voted.currentParameters.subBlocksPerBlockOpt shouldBe defined
++    }
++    val (candidate, _) = CandidateGenerator.createCandidate(defaultMinerPk, hist, emptyVSUpdate, us,
++      Seq.empty, None, Seq.empty, settings).get
++    assert(candidate.parameters.subBlocksPerBlock == voted.currentParameters.subBlocksPerBlock,
++      s"PROBE C-12: miner's input PoW uses subBlocksPerBlock ${candidate.parameters.subBlocksPerBlock}, " +
++        s"followers use ${voted.currentParameters.subBlocksPerBlock}")
++  }
++
++  property("PROBE C-2b: follower rejects an input chain whose prefix plus new body exceeds maxBlockCost") {
++    // Follower half of C-2, same fixture as PROBE C-2 (duplicated, no state shared across properties).
++    val params   = parameters.withBlockCost(100000)
++    val limit    = params.maxBlockCost.toLong
++    val bh       = boxesHolderGen.sample.get
++    val rnd      = new RandomWrapper
++    val us       = createUtxoState(bh, params)
++    val minValue = BoxUtils.sufficientAmount(parameters)
++    val ctx      = us.stateContext.simplifiedUpcoming()
++    def cost(txs: Seq[ErgoTransaction]): Long =
++      txs.map(tx => us.validateWithCost(tx, ctx, Int.MaxValue, Some(verifier), true).get.toLong).sum
++    val allTxs = bh.boxes.values.toIndexedSeq.filter(_.value >= minValue * 2).take(100)
++      .map(i => validTransactionFromBoxes(IndexedSeq(i), rnd, issueNew = false))
++    // longest run of txs whose summed cost stays within 0.9 x maxBlockCost
++    def fill(txs: Seq[ErgoTransaction]): Seq[ErgoTransaction] =
++      txs.zip(txs.scanLeft(0L)((acc, tx) => acc + cost(Seq(tx))).tail).takeWhile(_._2 <= limit * 9 / 10).map(_._1)
++    val prefix = fill(allTxs)
++    val pool   = fill(allTxs.drop(prefix.size))
++
++    val hist = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
++      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
++    applyChain(hist, genChain(2, hist, stateOpt = Some(us)))
++    val ib = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us)).tail.head.header, InputBlockFields.empty, None)
++    withClue("setup: prefix input block processed on the best ordering block: ") {
++      hist.applyInputBlock(ib) shouldBe None
++      hist.applyInputBlockTransactions(ib.id, prefix, us) shouldBe (Seq(ib.id) -> Seq.empty)
++      hist.getBestOrderingCollectedInputBlocksTransactions().map(_.id) shouldBe prefix.map(_.id)
++      cost(prefix) should be > limit / 2
++      cost(pool) should be > limit / 2
++    }
++
++    val ib2 = InputBlockAnnouncement(1, genChain(2, hist, stateOpt = Some(us)).tail.head.header,
++      new InputBlockFields(Some(idToBytes(ib.id)), Digest32 @@ Array.fill(32)(0.toByte), Digest32 @@ Array.fill(32)(0.toByte),
++        BatchMerkleProof(Seq.empty, Seq.empty)(Algos.hash)), None)
++    hist.applyInputBlock(ib2) shouldBe None
++    val (fwd, _) = hist.applyInputBlockTransactions(ib2.id, pool, us)
++    assert(fwd.isEmpty, s"PROBE C-2b: input chain accepted at cost ${cost(prefix) + cost(pool)} > $limit")
++  }
++
+ }
+diff --git a/src/test/scala/org/ergoplatform/nodeView/history/modifierprocessors/InputBlockProcessorSpecification.scala b/src/test/scala/org/ergoplatform/nodeView/history/modifierprocessors/InputBlockProcessorSpecification.scala
+index 46b6e1374..3b19b96de 100644
+--- a/src/test/scala/org/ergoplatform/nodeView/history/modifierprocessors/InputBlockProcessorSpecification.scala
++++ b/src/test/scala/org/ergoplatform/nodeView/history/modifierprocessors/InputBlockProcessorSpecification.scala
+@@ -3367,4 +3367,122 @@ class InputBlockProcessorSpecification extends ErgoCorePropertyTest with ErgoCom
+ 
+   // todo : tests for digest state
+ 
++  property("PROBE C-3: re-delivered bodies with altered proofs do not replace a processed input block's txs") {
++    // Finding C-3: tx ids exclude spending proofs, so a second delivery of an already processed input block's
++    // bodies with one proof altered passes the digest check (InputBlocksProcessor.scala:961) and overwrites the
++    // shared tx cache (InputBlocksProcessor.scala:969-975). Expected RED at the pin (the altered copy is returned).
++    val bh = BoxHolder(Seq(eb1))
++    val us = UtxoState.fromBoxHolder(bh, None, createTempDir, settings, parameters)
++    val txs = validTransactionsFromBoxHolder(bh, new RandomWrapper(Some(1)), 201)._1
++
++    val h = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
++      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
++    val c1 = genChain(height = 2, history = h, stateOpt = Some(us)).toList
++    applyChain(h, c1)
++
++    val c2 = genChain(2, h, stateOpt = Some(us)).tail
++    val x = InputBlockAnnouncement(1, c2(0).header, InputBlockFields.empty, None)
++    withClue("setup: X processed with its original bodies: ") {
++      h.applyInputBlock(x) shouldBe None
++      h.applyInputBlockTransactions(x.id, txs, us) shouldBe (Seq(x.id) -> Seq.empty)
++    }
++
++    // T' = T with the first input's proof bytes altered, context extension kept
++    val t = txs.head
++    val in0 = t.inputs.head
++    val origProof = in0.spendingProof.proof
++    val alteredProof = if (origProof.isEmpty) Array[Byte](1) else origProof.updated(0, (origProof(0) ^ 1).toByte)
++    val tPrime = t.copy(inputs = t.inputs.updated(0, Input(in0.boxId, ProverResult(alteredProof, in0.spendingProof.extension))))
++    withClue("setup: T' has the same id as T and different proof bytes: ") {
++      tPrime.id shouldBe t.id
++      tPrime.inputs.head.spendingProof.proof.sameElements(origProof) shouldBe false
++    }
++
++    h.applyInputBlockTransactions(x.id, txs.updated(0, tPrime), us)
++
++    val retained = h.getInputBlockTransactions(x.id).get.head.inputs.head.spendingProof.proof
++    assert(retained.sameElements(origProof),
++      s"PROBE C-3: processed input block ${x.id} now serves altered proof bytes ${Algos.encode(retained)} " +
++        s"instead of the original ${Algos.encode(origProof)} for tx ${t.id}")
++    val collected = h.getBestOrderingCollectedInputBlocksTransactions().find(_.id == t.id).get.inputs.head.spendingProof.proof
++    assert(collected.sameElements(origProof), s"PROBE C-3: candidate prefix (CG:691) serves altered proof ${Algos.encode(collected)}")
++  }
++
++  property("PROBE C-6: sibling registration keeps the progress just made on the processed fork") {
++    // Finding C-6: in processInputBlockTransactions the sibling-registration loop rebuilds the tree from the
++    // original `forks` (InputBlocksProcessor.scala:658, and :628 in the switch branch), so the fork that was just
++    // processed is reset. Sequence: announce a, b (prev a), b' (prev a); deliver b's body, then a's.
++    // Expected RED at the pin: fork [a, b] is left unprocessed and the best chain is only [a].
++    val bh = BoxHolder(Seq(eb1))
++    val us = UtxoState.fromBoxHolder(bh, None, createTempDir, settings, parameters)
++    val tx1 = validTransactionsFromBoxHolder(bh, new RandomWrapper(Some(1)), 201)._1
++
++    val h = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
++      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
++    val c1 = genChain(height = 2, history = h, stateOpt = Some(us)).toList
++    applyChain(h, c1)
++
++    val a = InputBlockAnnouncement(1, genChain(2, h, stateOpt = Some(us)).tail.head.header, InputBlockFields.empty, None)
++    val b = InputBlockAnnouncement(1, genChain(2, h, stateOpt = Some(us)).tail.head.header, parentOnly(idToBytes(a.id)), None)
++    val b2 = InputBlockAnnouncement(1, genChain(2, h, stateOpt = Some(us)).tail.head.header, parentOnly(idToBytes(a.id)), None)
++    withClue("setup: a, b, b' announced, b's body arrives before a's: ") {
++      Seq(a, b, b2).foreach(ib => h.applyInputBlock(ib) shouldBe None)
++      h.applyInputBlockTransactions(b.id, Seq.empty, us) shouldBe (Seq.empty -> Seq.empty)
++      h.applyInputBlockTransactions(a.id, tx1, us) shouldBe (Seq(a.id, b.id) -> Seq.empty)
++    }
++
++    val forks = h.inputBlocksTree().get.forks
++    val forkA = forks.find(_.chain == Seq(a.id, b.id)).get
++    val forkB = forks.find(_.chain == Seq(a.id, b2.id)).get
++    assert(forkA.processedIndex == 1,
++      s"PROBE C-6: fork [a, b] was applied up to b but is stored with processedIndex ${forkA.processedIndex}")
++    assert(forkB.processedIndex == 0,
++      s"PROBE C-6: fork [a, b'] should be registered as processed up to a, got ${forkB.processedIndex}")
++    // bestInputBlocksChain() lists the best chain tip first
++    assert(h.bestInputBlocksChain() == Seq(b.id, a.id),
++      s"PROBE C-6: best input chain is ${h.bestInputBlocksChain()} after a and b were applied, expected Seq(b, a)")
++  }
++
++  property("PROBE C-7: switching between root-sibling forks rolls back the abandoned processed chain") {
++    // Finding C-7: when the forks share no processed block, commonIdx stays -1 and the rollback list is
++    // empty (InputBlocksProcessor.scala:590), so the abandoned chain is never rolled back.
++    // Expected RED at the pin: the rollback list is Seq.empty instead of Seq(a, b).
++    val bh = BoxHolder(Seq(eb1))
++    val us = UtxoState.fromBoxHolder(bh, None, createTempDir, settings, parameters)
++    val tx1 = validTransactionsFromBoxHolder(bh, new RandomWrapper(Some(1)), 201)._1
++
++    val h = generateHistory(verifyTransactions = true, StateType.Utxo, PoPoWBootstrap = false, blocksToKeep = -1,
++      epochLength = 10000, useLastEpochs = 3, initialDiffOpt = None, None)
++    val c1 = genChain(height = 2, history = h, stateOpt = Some(us)).toList
++    applyChain(h, c1)
++
++    def nextHeader = genChain(2, h, stateOpt = Some(us)).tail.head.header
++    val a = InputBlockAnnouncement(1, nextHeader, InputBlockFields.empty, None)
++    val b = InputBlockAnnouncement(1, nextHeader, parentOnly(idToBytes(a.id)), None)
++    withClue("setup: fork [a, b] processed: ") {
++      h.applyInputBlock(a) shouldBe None
++      h.applyInputBlock(b) shouldBe None
++      h.applyInputBlockTransactions(a.id, tx1, us) shouldBe (Seq(a.id) -> Seq.empty)
++      h.applyInputBlockTransactions(b.id, Seq.empty, us) shouldBe (Seq(b.id) -> Seq.empty)
++      h.bestInputBlocksChain() shouldBe Seq(b.id, a.id)
++    }
++
++    // second root x (no previous input block) and its longer chain x <- y <- z
++    val x = InputBlockAnnouncement(1, nextHeader, InputBlockFields.empty, None)
++    val y = InputBlockAnnouncement(1, nextHeader, parentOnly(idToBytes(x.id)), None)
++    val z = InputBlockAnnouncement(1, nextHeader, parentOnly(idToBytes(y.id)), None)
++    withClue("setup: x, y bodies stored without a switch: ") {
++      Seq(x, y, z).foreach(ib => h.applyInputBlock(ib) shouldBe None)
++      h.applyInputBlockTransactions(x.id, Seq.empty, us) shouldBe (Seq.empty -> Seq.empty)
++      h.applyInputBlockTransactions(y.id, Seq.empty, us) shouldBe (Seq.empty -> Seq.empty)
++    }
++
++    val (forward, rollback) = h.applyInputBlockTransactions(z.id, Seq.empty, us)
++    withClue("setup: z's body triggers the switch to [x, y, z]: ") {
++      forward shouldBe Seq(x.id, y.id, z.id)
++    }
++    assert(rollback == Seq(a.id, b.id),
++      s"PROBE C-7: switch from [a, b] to [x, y, z] returned rollback list $rollback, expected Seq(a, b)")
++  }
++
+ }
+diff --git a/src/test/scala/org/ergoplatform/nodeView/state/ErgoStateContextSpec.scala b/src/test/scala/org/ergoplatform/nodeView/state/ErgoStateContextSpec.scala
+index 1534459c6..c46827949 100644
+--- a/src/test/scala/org/ergoplatform/nodeView/state/ErgoStateContextSpec.scala
++++ b/src/test/scala/org/ergoplatform/nodeView/state/ErgoStateContextSpec.scala
+@@ -189,4 +189,31 @@ class ErgoStateContextSpec extends ErgoCorePropertyTest {
+       .foreach { case (a, b) => a.toArray shouldEqual b.toArray }
+   }
+ 
++  // Root/side-note probe (ESC:134 applies passed votes mid-epoch; pre-existing on master). Not the C-12 gate; see CandidateGeneratorPropSpec.
++  property("PROBE C-12-ESC: mid-epoch upcoming() keeps the current epoch's subBlocksPerBlock") {
++    // Finding C-12: the miner checks input-block PoW with upcoming().currentParameters (CandidateGenerator.scala:879),
++    // and upcoming() applies a passed vote at any height (ErgoStateContext.scala:134 -> Parameters.scala:88), while
++    // followers use stateContext.currentParameters (ErgoNodeViewSynchronizer.scala:1575), which change only at an
++    // epoch start. Expected RED at the pin: upcoming() returns current + 1 mid-epoch (65 vs 64 with test defaults).
++    val chain = genChain(3)
++    val sc = chain.init.foldLeft[ErgoStateContext](emptyStateContext) { (acc, fb) => acc.appendFullBlock(fb).get }
++    val next = chain.last.header
++    val votingLength = sc.chainSettings.voting.votingLength
++    withClue("setup: next block is mid-epoch and parameter 9 is in the table: ") {
++      next.height % votingLength should not be 0
++      sc.currentParameters.subBlocksPerBlockOpt shouldBe defined
++    }
++    // epoch votes for SubblocksPerBlockIncrease past the approval threshold (VotingSettings.changeApproved)
++    val passedVote = VotingData(Array(SubblocksPerBlockIncrease -> (votingLength / 2 + 1)))
++    val ctx = new ErgoStateContext(sc.lastHeaders, sc.lastExtensionOpt, sc.genesisStateDigest,
++      sc.currentParameters, sc.validationSettings, passedVote)(sc.chainSettings)
++
++    val upcomingK = ctx.upcoming(next.minerPk, next.timestamp, next.nBits, next.votes,
++      ErgoValidationSettingsUpdate.empty, next.version).currentParameters.subBlocksPerBlock
++    val currentK = ctx.currentParameters.subBlocksPerBlock
++    assert(upcomingK == currentK,
++      s"PROBE C-12-ESC: at mid-epoch height ${next.height} upcoming() gives subBlocksPerBlock $upcomingK, " +
++        s"followers keep the epoch's $currentK")
++  }
++
+ }
+diff --git a/src/test/scala/org/ergoplatform/nodeView/state/UtxoStateSpecification.scala b/src/test/scala/org/ergoplatform/nodeView/state/UtxoStateSpecification.scala
+index f11a0a9b4..ff57318e5 100644
+--- a/src/test/scala/org/ergoplatform/nodeView/state/UtxoStateSpecification.scala
++++ b/src/test/scala/org/ergoplatform/nodeView/state/UtxoStateSpecification.scala
+@@ -629,4 +629,35 @@ class UtxoStateSpecification extends ErgoCorePropertyTest with OptionValues {
+     nipopowAlgos.interlinksToExtension(nipopowAlgos.updateInterlinks(sc.lastHeaderOpt, sc.lastExtensionOpt)).toExtension(header.id)
+   }
+ 
++  property("PROBE C-1: input-block tx with outputs at creationHeight = currentHeight + 1 is accepted") {
++    // Finding C-1: UtxoState.applyInputBlock (UtxoState.scala:316) validates input-block txs against
++    // stateContext, whose height is the parent ordering block's (h), while the mempool, the miner and the
++    // ordering block itself validate at h + 1. An output at creationHeight h + 1 then fails txFuture
++    // (ErgoTransaction.scala:188). Expected RED at the pin; GREEN once input blocks validate at h + 1.
++    val boxA = testBox(1000000000L, TrueTree, 0, boxIndex = 0)
++    val boxB = testBox(1000000000L, TrueTree, 0, boxIndex = 1)
++    val us0 = createUtxoState(BoxHolder(Seq(boxA, boxB)), parameters)
++    val genesisTx = ErgoTransaction(IndexedSeq(Input(boxA.id, emptyProverResult)), IndexedSeq(),
++      IndexedSeq(new ErgoBoxCandidate(boxA.value, TrueTree, creationHeight = 0)))
++    val genesis = validFullBlock(parentOpt = None, us0, Seq(genesisTx))
++    val us = us0.applyModifier(genesis, None)(_ => ()).get
++    withClue("setup: state is at the genesis ordering block: ") {
++      us.stateContext.lastHeaderOpt.map(_.id) shouldBe Some(genesis.header.id)
++    }
++    val h = us.stateContext.currentHeight
++
++    // TRUE-proposition input, so no signature is needed; the only output is created at h + 1
++    val tx = ErgoTransaction(IndexedSeq(Input(boxB.id, emptyProverResult)), IndexedSeq(),
++      IndexedSeq(new ErgoBoxCandidate(boxB.value, TrueTree, creationHeight = h + 1)))
++    // input block on top of the genesis ordering block, i.e. at height h + 1
++    val header = defaultHeaderGen.sample.value.copy(height = h + 1, parentId = genesis.header.id)
++
++    val res = us.applyInputBlock(Seq(tx), Seq.empty, header)
++    assert(res.isSuccess,
++      s"PROBE C-1: input block at height ${h + 1} rejected a tx whose output has creationHeight ${h + 1}; " +
++        s"applyInputBlock validated at stateContext.currentHeight = $h: " +
++        s"${res.failed.map(_.getMessage).getOrElse("")}")
++    us.closeStorage()
++  }
++
+ }

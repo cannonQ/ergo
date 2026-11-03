@@ -1,0 +1,917 @@
+### EXCERPT of run-CandidateGeneratorSpec.log (original 7,450,136,217 bytes / 88,487,357 lines; deleted after excerpting)
+### head -400
+[info] welcome to sbt 1.11.1 (Ubuntu Java 11.0.32.1)
+[info] loading settings for project ws-subblocks-build from plugins.sbt...
+[info] loading project definition from <worktree-pin>/project
+[info] loading settings for project ergo from build.sbt...
+[info] loading settings for project avldb from build.sbt...
+[info] loading settings for project ergoCore from build.sbt...
+[info] loading settings for project ergoWallet from build.sbt...
+[info] set current project to ergo (in build file:<worktree-pin>/)
+[warn] there are 4 keys that are not used by any other settings/tasks:
+[warn]  
+[warn] * ThisBuild / publishMavenStyle
+[warn]   +- <worktree-pin>/ergo-wallet/build.sbt:17
+[warn] * ergo / IntegrationTest / semanticdbTargetRoot
+[warn]   +- <worktree-pin>/build.sbt:174
+[warn] * ergo / It2 / semanticdbTargetRoot
+[warn]   +- <worktree-pin>/build.sbt:301
+[warn] * ergo / Linux / configuration
+[warn]   +- <worktree-pin>/build.sbt:166
+[warn]  
+[warn] note: a setting might still be used by a command; to exclude a key from this `lintUnused` check
+[warn] either append it to `Global / excludeLintKeys` or call .withRank(KeyRanks.Invisible) on the key
+[info] Setting Scala version to 2.12.20 on 5 projects.
+[info] Reapplying settings...
+[info] set current project to ergo (in build file:<worktree-pin>/)
+[info] Defining Test / javaOptions
+[info] The new value will be used by IntegrationTest / bspBuildTargetJvmEnvironmentItem, IntegrationTest / bspBuildTargetRun and 24 others.
+[info] 	Run `last` for details.
+[info] Reapplying settings...
+[info] set current project to ergo (in build file:<worktree-pin>/)
+[info] Defining Global / concurrentRestrictions
+[info] The new value will be used by no settings or tasks.
+[info] Reapplying settings...
+[info] set current project to ergo (in build file:<worktree-pin>/)
+[debug] Copy resource mappings: 
+[debug] 	(<worktree-pin>/src/test/resources/difficulty.csv,<worktree-pin>/target/scala-2.12/test-classes/difficulty.csv)
+[debug] 	(<worktree-pin>/src/test/resources/execute-script.json,<worktree-pin>/target/scala-2.12/test-classes/execute-script.json)
+[debug] 	(<worktree-pin>/src/test/resources/settings.json,<worktree-pin>/target/scala-2.12/test-classes/settings.json)
+[debug] 	(<worktree-pin>/src/test/resources/settings.conf,<worktree-pin>/target/scala-2.12/test-classes/settings.conf)
+[debug] 	(<worktree-pin>/src/test/resources/logback-test.xml,<worktree-pin>/target/scala-2.12/test-classes/logback-test.xml)
+[debug] 	(<worktree-pin>/src/test/resources/application.conf,<worktree-pin>/target/scala-2.12/test-classes/application.conf)
+[debug] Copy resource mappings: 
+[debug] 	(<worktree-pin>/src/main/resources/devnet.conf,<worktree-pin>/target/scala-2.12/classes/devnet.conf)
+[debug] 	(<worktree-pin>/src/main/resources/application.conf,<worktree-pin>/target/scala-2.12/classes/application.conf)
+[debug] 	(<worktree-pin>/src/main/resources/logback.xml,<worktree-pin>/target/scala-2.12/classes/logback.xml)
+[debug] 	(<worktree-pin>/src/main/resources/testnet.conf,<worktree-pin>/target/scala-2.12/classes/testnet.conf)
+[debug] 	(<worktree-pin>/src/main/resources/mainnet.conf,<worktree-pin>/target/scala-2.12/classes/mainnet.conf)
+[debug] 	(<worktree-pin>/src/main/resources/node2/application.conf,<worktree-pin>/target/scala-2.12/classes/node2/application.conf)
+[debug] 	(<worktree-pin>/src/main/resources/nodeTestnet/application.conf,<worktree-pin>/target/scala-2.12/classes/nodeTestnet/application.conf)
+[debug] 	(<worktree-pin>/src/main/resources/api/openapi.yaml,<worktree-pin>/target/scala-2.12/classes/api/openapi.yaml)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui-standalone-preset.js.map,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui-standalone-preset.js.map)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/README.md,<worktree-pin>/target/scala-2.12/classes/swagger-ui/README.md)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/favicon-32x32.png,<worktree-pin>/target/scala-2.12/classes/swagger-ui/favicon-32x32.png)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui-bundle.js.map,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui-bundle.js.map)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui.css.map,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui.css.map)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui-bundle.js,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui-bundle.js)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/oauth2-redirect.html,<worktree-pin>/target/scala-2.12/classes/swagger-ui/oauth2-redirect.html)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/index.html,<worktree-pin>/target/scala-2.12/classes/swagger-ui/index.html)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui-standalone-preset.js,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui-standalone-preset.js)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui.js.map,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui.js.map)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/favicon-16x16.png,<worktree-pin>/target/scala-2.12/classes/swagger-ui/favicon-16x16.png)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui.js,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui.js)
+[debug] 	(<worktree-pin>/src/main/resources/swagger-ui/swagger-ui.css,<worktree-pin>/target/scala-2.12/classes/swagger-ui/swagger-ui.css)
+[debug] 	(<worktree-pin>/src/main/resources/panel/favicon.png,<worktree-pin>/target/scala-2.12/classes/panel/favicon.png)
+[debug] 	(<worktree-pin>/src/main/resources/panel/favicon.svg,<worktree-pin>/target/scala-2.12/classes/panel/favicon.svg)
+[debug] 	(<worktree-pin>/src/main/resources/panel/service-worker.js,<worktree-pin>/target/scala-2.12/classes/panel/service-worker.js)
+[debug] 	(<worktree-pin>/src/main/resources/panel/index.html,<worktree-pin>/target/scala-2.12/classes/panel/index.html)
+[debug] 	(<worktree-pin>/src/main/resources/panel/manifest.json,<worktree-pin>/target/scala-2.12/classes/panel/manifest.json)
+[debug] 	(<worktree-pin>/src/main/resources/panel/robots.txt,<worktree-pin>/target/scala-2.12/classes/panel/robots.txt)
+[debug] 	(<worktree-pin>/src/main/resources/panel/precache-manifest.5ec1b24f55df1ee3e942e6e6777944c3.js,<worktree-pin>/target/scala-2.12/classes/panel/precache-manifest.5ec1b24f55df1ee3e942e6e6777944c3.js)
+[debug] 	(<worktree-pin>/src/main/resources/panel/asset-manifest.json,<worktree-pin>/target/scala-2.12/classes/panel/asset-manifest.json)
+[debug] 	(<worktree-pin>/src/main/resources/node1/application.conf,<worktree-pin>/target/scala-2.12/classes/node1/application.conf)
+[debug] 	(<worktree-pin>/src/main/resources/samples/local.conf.sample,<worktree-pin>/target/scala-2.12/classes/samples/local.conf.sample)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/css/main.95603572.chunk.css,<worktree-pin>/target/scala-2.12/classes/panel/static/css/main.95603572.chunk.css)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/css/2.8e5c4313.chunk.css.map,<worktree-pin>/target/scala-2.12/classes/panel/static/css/2.8e5c4313.chunk.css.map)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/css/2.8e5c4313.chunk.css,<worktree-pin>/target/scala-2.12/classes/panel/static/css/2.8e5c4313.chunk.css)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/css/main.95603572.chunk.css.map,<worktree-pin>/target/scala-2.12/classes/panel/static/css/main.95603572.chunk.css.map)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/js/runtime-main.3929add9.js,<worktree-pin>/target/scala-2.12/classes/panel/static/js/runtime-main.3929add9.js)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/js/2.82289ad5.chunk.js.map,<worktree-pin>/target/scala-2.12/classes/panel/static/js/2.82289ad5.chunk.js.map)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/js/runtime-main.3929add9.js.map,<worktree-pin>/target/scala-2.12/classes/panel/static/js/runtime-main.3929add9.js.map)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/js/2.82289ad5.chunk.js,<worktree-pin>/target/scala-2.12/classes/panel/static/js/2.82289ad5.chunk.js)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/js/main.4a62f34b.chunk.js.map,<worktree-pin>/target/scala-2.12/classes/panel/static/js/main.4a62f34b.chunk.js.map)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/js/main.4a62f34b.chunk.js,<worktree-pin>/target/scala-2.12/classes/panel/static/js/main.4a62f34b.chunk.js)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/MaterialIcons-Regular.a37b0c01.ttf,<worktree-pin>/target/scala-2.12/classes/panel/static/media/MaterialIcons-Regular.a37b0c01.ttf)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/MaterialIcons-Regular.012cf6a1.woff,<worktree-pin>/target/scala-2.12/classes/panel/static/media/MaterialIcons-Regular.012cf6a1.woff)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/MaterialIcons-Regular.570eb838.woff2,<worktree-pin>/target/scala-2.12/classes/panel/static/media/MaterialIcons-Regular.570eb838.woff2)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/redo-arrow-symbol.e801de31.svg,<worktree-pin>/target/scala-2.12/classes/panel/static/media/redo-arrow-symbol.e801de31.svg)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/Roboto-Bold.ee7b96fa.ttf,<worktree-pin>/target/scala-2.12/classes/panel/static/media/Roboto-Bold.ee7b96fa.ttf)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/copy.icon.835ebda7.svg,<worktree-pin>/target/scala-2.12/classes/panel/static/media/copy.icon.835ebda7.svg)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/logotype_white.4dcfd639.svg,<worktree-pin>/target/scala-2.12/classes/panel/static/media/logotype_white.4dcfd639.svg)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/MaterialIcons-Regular.e79bfd88.eot,<worktree-pin>/target/scala-2.12/classes/panel/static/media/MaterialIcons-Regular.e79bfd88.eot)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/Roboto-Thin.89e2666c.ttf,<worktree-pin>/target/scala-2.12/classes/panel/static/media/Roboto-Thin.89e2666c.ttf)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/Roboto-Light.fc84e998.ttf,<worktree-pin>/target/scala-2.12/classes/panel/static/media/Roboto-Light.fc84e998.ttf)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/Roboto-Regular.3e1af3ef.ttf,<worktree-pin>/target/scala-2.12/classes/panel/static/media/Roboto-Regular.3e1af3ef.ttf)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/Roboto-Medium.d0884059.ttf,<worktree-pin>/target/scala-2.12/classes/panel/static/media/Roboto-Medium.d0884059.ttf)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/remove.94c0849a.svg,<worktree-pin>/target/scala-2.12/classes/panel/static/media/remove.94c0849a.svg)
+[debug] 	(<worktree-pin>/src/main/resources/panel/static/media/close.feae5a5c.svg,<worktree-pin>/target/scala-2.12/classes/panel/static/media/close.feae5a5c.svg)
+[debug] [zinc] IncrementalCompile -----------
+[debug] IncrementalCompile.incrementalCompile
+[debug] previous = Stamps for: 1046 products, 184 sources, 27 libraries
+[debug] current source = Set(${BASE}/src/main/scala/org/ergoplatform/network/message/Message.scala, ${BASE}/src/main/scala/scorex/core/network/ModifiersStatus.scala, ${BASE}/src/main/scala/scorex/core/api/http/CorsHandler.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/IndexedErgoTransaction.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWalletActorMessages.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/HeadersProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/BalanceInfo.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ScanApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ApiError.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/requests/CryptoResult.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/TransactionGenerationRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/modifiers/mempool/UnconfirmedTransaction.scala, ${BASE}/src/main/scala/org/ergoplatform/network/ElementPartitioner.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/BlockchainApiRoute.scala, ${BASE}/src/main/scala/scorex/core/utils/NetworkUtils.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/ErgoHistory.scala, ${BASE}/src/main/scala/scorex/core/network/ConnectedPeer.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/IndexedContractTemplate.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/persistence/WalletDigest.scala, ${BASE}/src/main/scala/scorex/core/network/MaliciousBehaviorException.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ApiExtraCodecs.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/ToDownloadProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/BurnTokensRequest.scala, ${BASE}/src/main/scala/scorex/core/api/http/CompositeHttpService.scala, ${BASE}/src/main/scala/org/ergoplatform/network/peer/PeerManager.scala, ${BASE}/target/scala-2.12/src_managed/main/org/ergoplatform/Version.scala, ${BASE}/src/main/scala/scorex/core/app/ScorexContext.scala, ${BASE}/src/main/scala/scorex/core/network/DeliveryTracker.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/scanning/ScanningPredicate.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/NipopowApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/AssetIssueRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/local/CleanupWorker.scala, ${BASE}/src/main/scala/org/ergoplatform/network/message/MessageSerializer.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/BoxesRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/persistence/WalletRegistry.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/scanning/ScanningPredicateJsonCodecs.scala, ${BASE}/src/main/scala/scorex/core/network/Synchronizer.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/SnapshotsInfo.scala, ${BASE}/src/main/scala/scorex/core/network/PeerConnectionHandler.scala, ${BASE}/src/main/scala/org/ergoplatform/tools/CoinEmissionPrinter.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/WalletApiRoute.scala, ${BASE}/src/main/scala/scorex/core/api/http/ApiErrorHandler.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/VotingTargets.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/WalletProfile.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/ErgoMemPoolUtils.scala, ${BASE}/src/main/scala/scorex/core/api/http/swagger/SwaggerConfigRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/FilteringOptions.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/scanning/Scan.scala, ${BASE}/src/main/scala/org/ergoplatform/network/ErgoSyncTracker.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/IndexedErgoAddress.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/WalletVars.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWalletReader.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/WalletScanLogic.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWalletState.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/FeeHistogramBin.scala, ${BASE}/src/main/scala/org/ergoplatform/http/SwaggerRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ScriptApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWalletSupport.scala, ${BASE}/src/main/scala/org/ergoplatform/network/message/BasicMessagesRepo.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/TransactionSigningRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/WalletSettings.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/NodeConfigurationSettings.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/UtxoSetSnapshotPersistence.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWalletServiceUtils.scala, ${BASE}/src/main/scala/org/ergoplatform/network/FixedSizeApproximateCacheQueue.scala, ${BASE}/src/main/scala/scorex/core/network/PeerSynchronizer.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/WalletTransaction.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/MinimalFullBlockHeightFunctions.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/UtxoSetSnapshotDownloadPlan.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/ErgoSettings.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/ExpiringApproximateCache.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/storage/HistoryStorage.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/ErgoSettingsReader.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/IndexedErgoBox.scala, ${BASE}/src/main/scala/scorex/core/network/ConnectionDescription.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/FullBlockProcessor.scala, ${BASE}/src/main/scala/scorex/core/api/http/ApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/reemission/ReemissionRulesUtils.scala, ${BASE}/src/main/scala/org/ergoplatform/GlobalConstants.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/UtxoApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/SortDirection.scala, ${BASE}/src/main/scala/scorex/core/utils/ActorHelper.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/UtxoState.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/EmissionApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/BlocksApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/ExtraIndexSerializer.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/requests/HintExtractionRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/ErgoReadersHolder.scala, ${BASE}/src/main/scala/org/ergoplatform/network/ErgoNodeViewSynchronizerMessages.scala, ${BASE}/src/main/scala/scorex/core/network/UPnP.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWalletActor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/ErgoNodeViewHolder.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/CacheSettings.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoAddressJsonEncoder.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/persistence/WalletStorage.scala, ${BASE}/src/main/scala/scorex/core/api/http/ApiResponse.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/WalletApiOperations.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/ErgoHistoryReader.scala, ${BASE}/src/main/scala/org/ergoplatform/network/ErgoNodeViewSynchronizer.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/RequestsHolder.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/InputBlocksProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/tools/ValidationRulesPrinter.scala, ${BASE}/src/main/scala/org/ergoplatform/http/NodePanelRoute.scala, ${BASE}/src/main/scala/scorex/core/network/ConnectionDirection.scala, ${BASE}/src/main/scala/scorex/core/network/ConnectionId.scala, ${BASE}/src/main/scala/org/ergoplatform/local/ErgoStatsCollector.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ErgoUtilsApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/local/MempoolAuditor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/scanning/ScanWalletInteraction.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/UtxoSetSnapshotProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/ExtraIndex.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/scanning/ScanningPredicateSerializer.scala, ${BASE}/src/main/scala/scorex/core/api/http/ApiRejectionHandler.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/NumericIndex.scala, ${BASE}/src/main/scala/org/ergoplatform/modifiers/history/popow/NipopowProverWithDbAlgs.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/ErgoStateReader.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/requests/CompileRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/network/VersionBasedPeerFilteringRule.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/ExtraIndexer.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ScanEntities.scala, ${BASE}/src/main/scala/scorex/core/network/SendingStrategy.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/SnapshotsDb.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/BlockSectionProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWallet.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/ErgoMemPoolReader.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/WalletBox.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/UtxoStateReader.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/OrderedTxPool.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/AugWalletTransaction.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/PaymentRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/requests/ExecuteRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/persistence/Balance.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/NodeApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/DigestState.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/ExternalSecret.scala, ${BASE}/src/main/scala/scorex/core/ModifiersCache.scala, ${BASE}/src/main/scala/org/ergoplatform/network/peer/PenaltyType.scala, ${BASE}/src/main/scala/org/ergoplatform/mining/ErgoMiner.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/InfoApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/mining/CandidateGenerator.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/StateTypeReaders.scala, ${BASE}/src/main/scala/org/ergoplatform/mining/StorageRentClaimBuilder.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/WalletCache.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/Segment.scala, ${BASE}/src/main/scala/scorex/util/serialization/VLQByteStringReader.scala, ${BASE}/src/main/scala/org/ergoplatform/network/ErgoPeerStatus.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/Args.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/models/ChangeBox.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/requests/GenerateCommitmentsRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/requests/MiningRequest.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/PopowProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/BalancesSnapshot.scala, ${BASE}/src/main/scala/org/ergoplatform/mining/ErgoMiningThread.scala, ${BASE}/src/main/scala/scorex/util/serialization/VLQByteStringWriter.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ErgoBaseApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/ErgoModifiersCache.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/BasicReaders.scala, ${BASE}/src/main/scala/scorex/core/api/http/ApiDirectives.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/TransactionsApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/ErgoMemPool.scala, ${BASE}/src/main/scala/org/ergoplatform/network/peer/PeerInfo.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/IdUtils.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/FullBlockSectionProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ApiRequestsCodecs.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/ErgoWalletService.scala, ${BASE}/src/main/scala/org/ergoplatform/settings/NetworkType.scala, ${BASE}/src/main/scala/org/ergoplatform/http/ErgoHttpService.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/ErgoPeersApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/MiningApiRoute.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/IndexerState.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/HistogramStats.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/models/CollectedBoxes.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/mempool/MemPoolStatistics.scala, ${BASE}/src/main/scala/org/ergoplatform/ErgoApp.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/StorageRentBox.scala, ${BASE}/src/main/scala/org/ergoplatform/network/peer/PeerDatabase.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/BoxHolder.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/extra/IndexedToken.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/wallet/persistence/OffChainRegistry.scala, ${BASE}/src/main/scala/org/ergoplatform/http/api/IndexedBlock.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/EmptyBlockSectionProcessor.scala, ${BASE}/src/main/scala/scorex/core/network/NetworkController.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/history/modifierprocessors/FullBlockPruningProcessor.scala, ${BASE}/src/main/scala/org/ergoplatform/nodeView/state/ErgoState.scala)
+[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(),Set(),API Changes: Set())
+[debug] No changes
+[debug] Created transactional ClassFileManager with tempDir = <worktree-pin>/target/scala-2.12/classes.bak
+[debug] Removing the temporary directory used for backing up class files: <worktree-pin>/target/scala-2.12/classes.bak
+[debug] [zinc] IncrementalCompile -----------
+[debug] IncrementalCompile.incrementalCompile
+[debug] previous = Stamps for: 602 products, 173 sources, 35 libraries
+[debug] current source = Set(${BASE}/src/test/scala/org/ergoplatform/mining/ErgoMinerSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/mining/llm_generated/ErgoMinerSolutionForwardingSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/mempool/OrderedTxPoolSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/ErgoStateSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/serialization/ErgoBoxSerializerSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/TestCase.scala, ${BASE}/src/test/scala/org/ergoplatform/local/MempoolAuditorSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/NetworkComponentsSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/FixedSizeApproximateCacheQueueSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/mining/CandidateGeneratorSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/sanity/ErgoSanityUTXO.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/generators/ChainGenerator.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/scanning/ScanSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/modifiers/mempool/ExpirationSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/VerifyNonADHistorySpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/SnapshotsInfoSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/network/peer/PeerManagerSpec.scala, ${BASE}/src/test/scala/scorex/core/network/DeliveryTrackerSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/WalletVarsSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/viewholder/HeaderBodyCacheWakeupSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/ElementPartitionerSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/modifierprocessors/InputBlockProcessorConcurrencySpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/fixtures/WalletFixture.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/mempool/ScriptsSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/tools/FeeSimulator.scala, ${BASE}/src/test/scala/org/ergoplatform/modifiers/history/HeadersSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/modifiers/mempool/StorageRentDistinctOutputsSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/ExtraIndexerTestActor.scala, ${BASE}/src/test/scala/scorex/testkit/properties/state/StateTests.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/scanning/ScanningPredicateJsonCodecsSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/network/messages/OrderingBlockAnnouncementMessageSpecSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/InvSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/network/ErgoSyncTrackerSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/generators/ErgoNodeWalletGenerators.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/ErgoNodeTestConstants.scala, ${BASE}/src/test/scala/org/ergoplatform/tools/MinerBench.scala, ${BASE}/src/test/scala/scorex/testkit/generators/SyntacticallyTargetedModifierProducer.scala, ${BASE}/src/test/scala/scorex/testkit/generators/SemanticallyInvalidModifierProducer.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/DigestStateSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/ExtraIndexerRestoreJoinSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/persistence/WalletStorageSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/InputBlockParentBindingSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/db/KvStoreReaderSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/VerifyADHistorySpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/ExtraIndexerRestartSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/NodeViewSynchronizerTests.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/Stubs.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/HistoryTestHelpers.scala, ${BASE}/src/test/scala/org/ergoplatform/sanity/ErgoSanityDigest.scala, ${BASE}/src/test/scala/org/ergoplatform/modifiers/history/PoPowAlgosWithDBSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/ErgoHttpServiceSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/sanity/ErgoSanity.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/NipopowApiRoutesSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/mempool/ExpiringApproximateCacheSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/fixtures/SequentialAkkaFixture.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/ExtraIndexerAppliedBlocksSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/mining/CandidateGeneratorStorageRentSpec.scala, ${BASE}/src/test/scala/scorex/testkit/generators/TotallyValidModifierProducer.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/scanning/ScanningPredicateSerializerSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/wrapped/WrappedUtxoState.scala, ${BASE}/src/test/scala/scorex/core/network/PeerConnectionHandlerSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/network/DeliveryTrackerSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/tools/DefaultParametersPrinter.scala, ${BASE}/src/test/scala/org/ergoplatform/mining/StorageRentClaimBuilderSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/SnapshotsDbSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/db/DBSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/ErgoPeersApiRouteSpec.scala, ${BASE}/src/test/scala/scorex/testkit/generators/AllModifierProducers.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/viewholder/DigestStateRecoverySpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/OrderingBlockAnnouncementParentCheckSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/generators/ConnectedPeerGenerators.scala, ${BASE}/src/test/scala/org/ergoplatform/network/PeerFilteringRuleSpecification.scala, ${BASE}/src/test/scala/scorex/testkit/properties/state/StateApplicationTest.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/ErgoBaseApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/RentIndexMarkerSpec.scala, ${BASE}/src/test/scala/scorex/testkit/properties/HistoryTests.scala, ${BASE}/src/test/scala/org/ergoplatform/network/llm_generated/LocalBlockDownloadSpecification.scala, ${BASE}/src/test/scala/scorex/testkit/properties/NodeViewHolderTests.scala, ${BASE}/src/test/scala/scorex/testkit/properties/mempool/MempoolFilterPerformanceTest.scala, ${BASE}/src/test/scala/org/ergoplatform/settings/NetworkTypeSpec.scala, ${BASE}/src/test/scala/scorex/testkit/properties/mempool/MempoolRemovalTest.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/ErgoWalletServiceSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/UtxoStateSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/settings/ErgoNodeVotingSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/WalletProfileSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/db/LDBKVStoreSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/ErgoSyncInfoSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/UtxoBootstrapRestartSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/local/NipopowVerifierSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/UtilsApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/mempool/MempoolBlockClearingSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/ChainGenerator.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/PopowProcessorSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/MempoolTestHelpers.scala, ${BASE}/src/test/scala/org/ergoplatform/serialization/SerializationTests.scala, ${BASE}/src/test/scala/scorex/testkit/utils/AkkaFixture.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/ErgoWalletSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/MessageSerializerSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/network/OrderingBlockSyncSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/modifiers/mempool/ErgoNodeTransactionSpec.scala, ${BASE}/src/test/scala/scorex/testkit/generators/SemanticallyValidModifierProducer.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/persistence/WalletRegistrySpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/ErgoModifiersCacheSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/storage/modifierprocessors/UtxoBootstrapToDownloadSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/viewholder/PrunedNodeViewHolderSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/ErgoStateContextHelpers.scala, ${BASE}/src/test/scala/scorex/core/network/NetworkControllerSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/mempool/ErgoMemPoolStorageRentFilterSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/WalletApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/persistence/WalletRegistryBenchmark.scala, ${BASE}/src/test/scala/org/ergoplatform/network/protocol/ProtocolVersionCompatibilitySpec.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/generators/ValidBlocksGenerators.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/generators/ErgoNodeGenerators.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/storage/HistoryStorageSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/WalletTestOps.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/UtxoApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/ScanApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/wrapped/WrappedDigestState.scala, ${BASE}/src/test/scala/org/ergoplatform/tools/ChainGenerator.scala, ${BASE}/src/test/scala/org/ergoplatform/mining/CandidateGeneratorPropSpec.scala, ${BASE}/src/test/scala/scorex/testkit/generators/CustomModifierProducer.scala, ${BASE}/src/test/scala/org/ergoplatform/network/ActivePeerFilteringSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/db/VersionedStoreSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/ErgoNodeViewSynchronizerSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/mempool/ErgoMemPoolReemissionPrefilterSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/NodeViewTestOps.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/WalletScanLogicSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/OrderingBlockMessageFlowSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/messages/InputBlockMessageSpecSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/BlocksApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/UtxoBootstrapNoNipopowSyncSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/EmissionApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/mempool/ErgoMemPoolSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/viewholder/ErgoNodeViewHolderSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/modifierprocessors/InputBlockProcessorSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/StorageRentBoxSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/UtxoSetSnapshotProcessorSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/tools/ConfigGenerator.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/NodeViewTestConfig.scala, ${BASE}/src/test/scala/org/ergoplatform/mining/CandidateRetryReorgSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/TransactionApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/MiningApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/serialization/JsonSerializationSpec.scala, ${BASE}/src/test/scala/scorex/testkit/generators/ArbitraryTransactionsCarryingModifierProducer.scala, ${BASE}/src/test/scala/scorex/testkit/generators/SemanticallyValidTransactionsCarryingModifier.scala, ${BASE}/src/test/scala/scorex/testkit/properties/mempool/MemoryPoolTest.scala, ${BASE}/src/test/scala/org/ergoplatform/network/peer/LocalPeerFilteringSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/BlockchainExtraIndexGateSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/ModifiersSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/fixtures/NodeViewFixture.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/ScriptApiRouteSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/tools/DifficultyControlSimulator.scala, ${BASE}/src/test/scala/org/ergoplatform/modifiers/history/PoPowAlgosSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/network/llm_generated/AnnouncementDownloadSpecification.scala, ${BASE}/src/test/scala/scorex/testkit/properties/mempool/MempoolTransactionsTest.scala, ${BASE}/src/test/scala/org/ergoplatform/network/RequestModifiersSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/generators/ErgoNodeTransactionGenerators.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/NodeViewTestContext.scala, ${BASE}/src/test/scala/org/ergoplatform/http/api/requests/MiningRequestSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/persistence/OffChainRegistrySpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/InputBlockWalletSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/state/ErgoStateContextSpec.scala, ${BASE}/src/test/scala/scorex/testkit/TestkitHelpers.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/wallet/scanning/ScanningPredicateSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/BlockSectionValidationSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/ErgoTestHelpers.scala, ${BASE}/src/test/scala/org/ergoplatform/utils/ErgoCompilerHelpers.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/NonVerifyADHistorySpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/settings/ErgoSettingsSpecification.scala, ${BASE}/src/test/scala/org/ergoplatform/http/routes/InfoApiRoutesSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/SegmentSpec.scala, ${BASE}/src/test/scala/org/ergoplatform/nodeView/history/extra/ExtraIndexerSpecification.scala, ${BASE}/src/test/scala/scorex/core/network/PeerSpecSerializerSpec.scala)
+[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(),Set(),API Changes: Set())
+[debug] No changes
+[debug] Created transactional ClassFileManager with tempDir = <worktree-pin>/target/scala-2.12/test-classes.bak
+[debug] Removing the temporary directory used for backing up class files: <worktree-pin>/target/scala-2.12/test-classes.bak
+[debug] Framework implementation 'org.specs2.runner.Specs2Framework' not present.
+[debug] Framework implementation 'org.specs2.runner.SpecsFramework' not present.
+[debug] Framework implementation 'org.specs.runner.SpecsFramework' not present.
+[debug] Framework implementation 'com.novocode.junit.JUnitFramework' not present.
+[debug] Framework implementation 'munit.Framework' not present.
+[debug] Framework implementation 'zio.test.sbt.ZTestFramework' not present.
+[debug] Framework implementation 'weaver.framework.CatsEffect' not present.
+[debug] Framework implementation 'hedgehog.sbt.Framework' not present.
+[debug] Subclass fingerprints: List((org.scalacheck.Properties,false,org.scalacheck.ScalaCheckFramework$$anon$5@27a371c5), (org.scalacheck.Prop,false,org.scalacheck.ScalaCheckFramework$$anon$5@6f83d48c), (org.scalacheck.Properties,true,org.scalacheck.ScalaCheckFramework$$anon$5@5fadb711), (org.scalacheck.Prop,true,org.scalacheck.ScalaCheckFramework$$anon$5@384322dc), (org.scalatest.Suite,false,org.scalatest.tools.Framework$$anon$1@4d24148))
+[debug] Annotation fingerprints: List((org.scalatest.WrapWith,false,org.scalatest.tools.Framework$$anon$2@7504d2ea))
+[debug] javaOptions: Vector(-Xmx2g, -Xss64m, -XX:+ExitOnOutOfMemoryError)
+[debug] Forking tests - parallelism = false
+[debug] Create a single-thread test executor
+[debug] Runner for org.scalatest.tools.Framework produced 1 initial tasks for 1 tests.
+[debug]   Running TaskDef(org.ergoplatform.mining.CandidateGeneratorSpec, sbt.ForkMain$SubclassFingerscan@14acaea5, false, [SuiteSelector])
+14:51:24,311 |-INFO in ch.qos.logback.classic.LoggerContext[default] - This is logback-classic version 1.3.5
+14:51:24,319 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback-test.xml] at [file:<worktree-pin>/target/scala-2.12/test-classes/logback-test.xml]
+14:51:24,320 |-WARN in ch.qos.logback.classic.util.DefaultJoranConfigurator@24723386 - Resource [logback-test.xml] occurs multiple times on the classpath.
+14:51:24,320 |-WARN in ch.qos.logback.classic.util.DefaultJoranConfigurator@24723386 - Resource [logback-test.xml] occurs at [file:<worktree-pin>/target/scala-2.12/test-classes/logback-test.xml]
+14:51:24,320 |-WARN in ch.qos.logback.classic.util.DefaultJoranConfigurator@24723386 - Resource [logback-test.xml] occurs at [file:<worktree-pin>/ergo-core/target/scala-2.12/test-classes/logback-test.xml]
+14:51:24,383 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [CONSOLE]
+14:51:24,383 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+14:51:24,388 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+14:51:24,403 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [CONSOLE] to Logger[ROOT]
+14:51:24,403 |-INFO in ch.qos.logback.core.model.processor.DefaultProcessor@226bfc5a - End of configuration.
+14:51:24,403 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@49d5c523 - Registering current configuration as safe fallback point
+
+[pool-1-thread-1] >> [WARN ] o.e.settings.ErgoSettingsReader$ >> 14:51:25.089 Running without network config
+[pool-1-thread-1] >> [WARN ] o.e.settings.ErgoSettingsReader$ >> 14:51:25.182 Running without network config
+[info] CandidateGeneratorSpec:
+[default-api-dispatcher-6] >> [WARN ] o.e.n.wallet.ErgoWalletServiceImpl >> 14:51:25.820 Avoiding wallet reading in test mode by building prover from mnemonic. Switch to secure mode for production usage.
+[info] - should provider candidate to internal miner and verify and apply his solution
+[default-critical-dispatcher-7] >> [WARN ] o.e.nodeView.UtxoNodeViewHolder >> 14:51:27.824 Stopping ErgoNodeViewHolder
+[default-critical-dispatcher-7] >> [WARN ] o.e.n.history.storage.HistoryStorage >> 14:51:27.825 Closing history storage...
+[default-critical-dispatcher-7] >> [WARN ] o.e.nodeView.state.UtxoState >> 14:51:27.825 Closing state's store.
+[default-critical-dispatcher-5] >> [ERROR] o.e.mining.CandidateGenerator >> 14:51:27.826 Candidate generation failed
+org.iq80.leveldb.DBException: Closed
+	at org.fusesource.leveldbjni.internal.JniDB.get(JniDB.java:75)
+	at scorex.db.StoreRegistry$RegisteredDB.get(LDBFactory.scala:28)
+	at scorex.db.KVStoreReader.get(KVStoreReader.scala:30)
+	at scorex.db.KVStoreReader.get$(KVStoreReader.scala:27)
+	at scorex.db.LDBVersionedStore.get(LDBVersionedStore.scala:29)
+	at org.ergoplatform.nodeView.state.ErgoStateReader$.storageStateContext(ErgoStateReader.scala:68)
+	at org.ergoplatform.nodeView.state.ErgoStateReader.stateContext(ErgoStateReader.scala:46)
+	at org.ergoplatform.nodeView.state.ErgoStateReader.stateContext$(ErgoStateReader.scala:46)
+	at org.ergoplatform.nodeView.state.UtxoState.stateContext(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.$anonfun$createCandidate$1(CandidateGenerator.scala:698)
+	at scala.util.Try$.apply(Try.scala:213)
+	at org.ergoplatform.mining.CandidateGenerator$.createCandidate(CandidateGenerator.scala:613)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:523)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-api-dispatcher-8] >> [WARN ] o.e.n.wallet.ErgoWalletServiceImpl >> 14:51:27.943 Avoiding wallet reading in test mode by building prover from mnemonic. Switch to secure mode for production usage.
+[default-critical-dispatcher-9] >> [WARN ] o.e.mining.CandidateGenerator >> 14:51:29.934 Locally mined block 37bb36b5c882bd36984398bf1ef0b60476d1870861a0fc14182cedd2c19d7c50 invalidated by the node view holder, resuming mining
+org.ergoplatform.validation.MalformedModifierError: tx failed
+	at org.ergoplatform.mining.CandidateGeneratorSpec$$anon$2.<init>(CandidateGeneratorSpec.scala:142)
+	at org.ergoplatform.mining.CandidateGeneratorSpec.$anonfun$new$2(CandidateGeneratorSpec.scala:94)
+	at org.scalatest.OutcomeOf.outcomeOf(OutcomeOf.scala:85)
+	at org.scalatest.OutcomeOf.outcomeOf$(OutcomeOf.scala:83)
+	at org.scalatest.OutcomeOf$.outcomeOf(OutcomeOf.scala:104)
+	at org.scalatest.Transformer.apply(Transformer.scala:22)
+	at org.scalatest.Transformer.apply(Transformer.scala:20)
+	at org.scalatest.flatspec.AnyFlatSpecLike$$anon$5.apply(AnyFlatSpecLike.scala:1832)
+	at org.scalatest.TestSuite.withFixture(TestSuite.scala:196)
+	at org.scalatest.TestSuite.withFixture$(TestSuite.scala:195)
+	at org.scalatest.flatspec.AnyFlatSpec.withFixture(AnyFlatSpec.scala:1686)
+	at org.scalatest.flatspec.AnyFlatSpecLike.invokeWithFixture$1(AnyFlatSpecLike.scala:1830)
+	at org.scalatest.flatspec.AnyFlatSpecLike.$anonfun$runTest$1(AnyFlatSpecLike.scala:1842)
+	at org.scalatest.SuperEngine.runTestImpl(Engine.scala:306)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTest(AnyFlatSpecLike.scala:1842)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTest$(AnyFlatSpecLike.scala:1824)
+	at org.scalatest.flatspec.AnyFlatSpec.runTest(AnyFlatSpec.scala:1686)
+	at org.scalatest.flatspec.AnyFlatSpecLike.$anonfun$runTests$1(AnyFlatSpecLike.scala:1900)
+	at org.scalatest.SuperEngine.$anonfun$runTestsInBranch$1(Engine.scala:413)
+	at scala.collection.immutable.List.foreach(List.scala:431)
+	at org.scalatest.SuperEngine.traverseSubNodes$1(Engine.scala:401)
+	at org.scalatest.SuperEngine.runTestsInBranch(Engine.scala:396)
+	at org.scalatest.SuperEngine.runTestsImpl(Engine.scala:475)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTests(AnyFlatSpecLike.scala:1900)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTests$(AnyFlatSpecLike.scala:1899)
+	at org.scalatest.flatspec.AnyFlatSpec.runTests(AnyFlatSpec.scala:1686)
+	at org.scalatest.Suite.run(Suite.scala:1114)
+	at org.scalatest.Suite.run$(Suite.scala:1096)
+	at org.scalatest.flatspec.AnyFlatSpec.org$scalatest$flatspec$AnyFlatSpecLike$$super$run(AnyFlatSpec.scala:1686)
+	at org.scalatest.flatspec.AnyFlatSpecLike.$anonfun$run$1(AnyFlatSpecLike.scala:1945)
+	at org.scalatest.SuperEngine.runImpl(Engine.scala:535)
+	at org.scalatest.flatspec.AnyFlatSpecLike.run(AnyFlatSpecLike.scala:1945)
+	at org.scalatest.flatspec.AnyFlatSpecLike.run$(AnyFlatSpecLike.scala:1943)
+	at org.scalatest.flatspec.AnyFlatSpec.run(AnyFlatSpec.scala:1686)
+	at org.scalatest.tools.Framework.org$scalatest$tools$Framework$$runSuite(Framework.scala:321)
+	at org.scalatest.tools.Framework$ScalaTestTask.execute(Framework.scala:517)
+	at sbt.ForkMain$Run.lambda$runTest$1(ForkMain.java:414)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-critical-dispatcher-9] >> [WARN ] o.e.nodeView.UtxoNodeViewHolder >> 14:51:29.946 Stopping ErgoNodeViewHolder
+[default-critical-dispatcher-9] >> [WARN ] o.e.n.history.storage.HistoryStorage >> 14:51:29.946 Closing history storage...
+[info] - should recover when locally mined block is invalidated by node view holder
+[default-critical-dispatcher-9] >> [WARN ] o.e.nodeView.state.UtxoState >> 14:51:29.947 Closing state's store.
+[default-api-dispatcher-7] >> [WARN ] o.e.n.wallet.ErgoWalletServiceImpl >> 14:51:30.043 Avoiding wallet reading in test mode by building prover from mnemonic. Switch to secure mode for production usage.
+[default-critical-dispatcher-6] >> [WARN ] o.e.mining.CandidateGenerator >> 14:51:32.041 Locally mined block f77509f357c11a7630c57753c254e6f2972b057e2142619645a4935152d76bf0 invalidated by the node view holder, resuming mining
+org.ergoplatform.validation.MalformedModifierError: tx failed
+	at org.ergoplatform.mining.CandidateGeneratorSpec$$anon$3.<init>(CandidateGeneratorSpec.scala:213)
+	at org.ergoplatform.mining.CandidateGeneratorSpec.$anonfun$new$3(CandidateGeneratorSpec.scala:165)
+	at org.scalatest.OutcomeOf.outcomeOf(OutcomeOf.scala:85)
+	at org.scalatest.OutcomeOf.outcomeOf$(OutcomeOf.scala:83)
+	at org.scalatest.OutcomeOf$.outcomeOf(OutcomeOf.scala:104)
+	at org.scalatest.Transformer.apply(Transformer.scala:22)
+	at org.scalatest.Transformer.apply(Transformer.scala:20)
+	at org.scalatest.flatspec.AnyFlatSpecLike$$anon$5.apply(AnyFlatSpecLike.scala:1832)
+	at org.scalatest.TestSuite.withFixture(TestSuite.scala:196)
+	at org.scalatest.TestSuite.withFixture$(TestSuite.scala:195)
+	at org.scalatest.flatspec.AnyFlatSpec.withFixture(AnyFlatSpec.scala:1686)
+	at org.scalatest.flatspec.AnyFlatSpecLike.invokeWithFixture$1(AnyFlatSpecLike.scala:1830)
+	at org.scalatest.flatspec.AnyFlatSpecLike.$anonfun$runTest$1(AnyFlatSpecLike.scala:1842)
+	at org.scalatest.SuperEngine.runTestImpl(Engine.scala:306)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTest(AnyFlatSpecLike.scala:1842)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTest$(AnyFlatSpecLike.scala:1824)
+	at org.scalatest.flatspec.AnyFlatSpec.runTest(AnyFlatSpec.scala:1686)
+	at org.scalatest.flatspec.AnyFlatSpecLike.$anonfun$runTests$1(AnyFlatSpecLike.scala:1900)
+	at org.scalatest.SuperEngine.$anonfun$runTestsInBranch$1(Engine.scala:413)
+	at scala.collection.immutable.List.foreach(List.scala:431)
+	at org.scalatest.SuperEngine.traverseSubNodes$1(Engine.scala:401)
+	at org.scalatest.SuperEngine.runTestsInBranch(Engine.scala:396)
+	at org.scalatest.SuperEngine.runTestsImpl(Engine.scala:475)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTests(AnyFlatSpecLike.scala:1900)
+	at org.scalatest.flatspec.AnyFlatSpecLike.runTests$(AnyFlatSpecLike.scala:1899)
+	at org.scalatest.flatspec.AnyFlatSpec.runTests(AnyFlatSpec.scala:1686)
+	at org.scalatest.Suite.run(Suite.scala:1114)
+	at org.scalatest.Suite.run$(Suite.scala:1096)
+	at org.scalatest.flatspec.AnyFlatSpec.org$scalatest$flatspec$AnyFlatSpecLike$$super$run(AnyFlatSpec.scala:1686)
+	at org.scalatest.flatspec.AnyFlatSpecLike.$anonfun$run$1(AnyFlatSpecLike.scala:1945)
+	at org.scalatest.SuperEngine.runImpl(Engine.scala:535)
+	at org.scalatest.flatspec.AnyFlatSpecLike.run(AnyFlatSpecLike.scala:1945)
+	at org.scalatest.flatspec.AnyFlatSpecLike.run$(AnyFlatSpecLike.scala:1943)
+	at org.scalatest.flatspec.AnyFlatSpec.run(AnyFlatSpec.scala:1686)
+	at org.scalatest.tools.Framework.org$scalatest$tools$Framework$$runSuite(Framework.scala:321)
+	at org.scalatest.tools.Framework$ScalaTestTask.execute(Framework.scala:517)
+	at sbt.ForkMain$Run.lambda$runTest$1(ForkMain.java:414)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-critical-dispatcher-6] >> [WARN ] o.e.nodeView.UtxoNodeViewHolder >> 14:51:32.051 Stopping ErgoNodeViewHolder
+[default-critical-dispatcher-6] >> [WARN ] o.e.n.history.storage.HistoryStorage >> 14:51:32.051 Closing history storage...
+[info] - should recover when locally mined block is invalidated by full block id
+[default-critical-dispatcher-6] >> [WARN ] o.e.nodeView.state.UtxoState >> 14:51:32.051 Closing state's store.
+[default-api-dispatcher-6] >> [WARN ] o.e.n.wallet.ErgoWalletServiceImpl >> 14:51:32.141 Avoiding wallet reading in test mode by building prover from mnemonic. Switch to secure mode for production usage.
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.136 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.136 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.137 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.137 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.137 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.137 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.137 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.137 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.138 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.138 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.138 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.138 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.139 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.139 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.139 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.139 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.139 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.139 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.140 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.140 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.141 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.141 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.141 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.141 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.141 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.141 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.142 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.142 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.142 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.142 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.143 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.143 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.143 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.143 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.144 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.144 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.145 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.145 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.145 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.145 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.146 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.146 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.146 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.146 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.147 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.147 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.147 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.147 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.148 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.148 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.148 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.148 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.149 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.149 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.149 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.149 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.149 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.150 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.150 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.150 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.150 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.151 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.151 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-4] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.151 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] o.e.mining.ErgoMiningThread >> 14:51:34.151 Accepting solution or preparing candidate did not succeed
+akka.pattern.StatusReply$ErrorMessage: Block already solved : Some(250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2)
+
+### FAILED lines with 12 lines of context, first 40 matches
+783:[info] - should let multiple miners compete *** FAILED ***
+784-[info]   java.lang.AssertionError: assertion failed: expected class org.ergoplatform.mining.ErgoMiningThread$SolvedBlocksCount, found class org.ergoplatform.network.ErgoNodeViewSynchronizerMessages$LocalBlockApplied (LocalBlockApplied(Header({"extensionId":"0ab4a59857a0b89c7b4871f2f3b21965262ad7217efc0aba69f7b67bb878ef4e","difficulty":"1","votes":"000000","timestamp":1793739094159,"size":218,"unparsedBytes":"","stateRoot":"8c9e6a46df675ff6f3e9bae7aabcac19f5d978cb176d5feeef8b781f16c0e2ea03","height":3,"nBits":16842752,"version":4,"id":"cf1fccd1f6f9805dec9cbc596764eab640a2f0fee1537d2405ee4055a46d4b5a","adProofsRoot":"c478688fda0981b58a42a6e59e55e5424dbbfb897f54e9cb183645ca7fea5732","transactionsRoot":"c373d49d9c6ab881fdbcccffc6e794a68c2734fb13883086607a18d42ff92101","extensionHash":"64c0df3898c2ffc434b0a9a8d1c370bef26eac8323d0132dea70190bc2e4ac9e","powSolutions":{"pk":"038b0f29a60fa8d7e1aeafbe512288a6c6bc696547bbf8247db23c95e83014513c","w":"0382f037b2220fa7a318c583a7b22f37a49bb017f7ce42644f46be659b0372dbca","n":"0000000000000000","d":9649340769776349618630915417390658987736463689922908698550430261793180124528},"adProofsId":"f3ddb0270bb493a88ee21de1c2f749a99cf4c2d5ec394efc2584563b0e44f71b","transactionsId":"64a030d8fc50d077fe76668ba86aaf334cebf9e786824cc5d786988f3f167532","parentId":"250b27159e2bdf8ba811d794fae8cddc612742c4ea2d6baca37de3e3310decd2"}),ArrayBuffer(e95d8d172d9bf7d7618b9ece60925de6122a202ebe7e9d7115ca06a08d3b7e08)))
+785-[info]   at scala.Predef$.assert(Predef.scala:223)
+786-[info]   at akka.testkit.TestKitBase.expectMsgClass_internal(TestKit.scala:570)
+787-[info]   at akka.testkit.TestKitBase.expectMsgClass(TestKit.scala:565)
+788-[info]   at akka.testkit.TestKitBase.expectMsgClass$(TestKit.scala:565)
+789-[info]   at akka.testkit.TestKit.expectMsgClass(TestKit.scala:969)
+790-[info]   at org.ergoplatform.mining.CandidateGeneratorSpec$$anon$4.<init>(CandidateGeneratorSpec.scala:263)
+791-[info]   at org.ergoplatform.mining.CandidateGeneratorSpec.$anonfun$new$4(CandidateGeneratorSpec.scala:236)
+792-[info]   at org.scalatest.OutcomeOf.outcomeOf(OutcomeOf.scala:85)
+793-[info]   at org.scalatest.OutcomeOf.outcomeOf$(OutcomeOf.scala:83)
+794-[info]   at org.scalatest.OutcomeOf$.outcomeOf(OutcomeOf.scala:104)
+795-[info]   ...
+--
+3281763:[info] - should cache candidate until newly mined block is applied *** FAILED ***
+3281764-[info]   java.lang.AssertionError: assertion failed: timeout (9 seconds) during expectMsg:
+3281765-[info]   at scala.Predef$.assert(Predef.scala:223)
+3281766-[info]   at akka.testkit.TestKitBase.expectMsgPF(TestKit.scala:477)
+3281767-[info]   at akka.testkit.TestKitBase.expectMsgPF$(TestKit.scala:474)
+3281768-[info]   at akka.testkit.TestKit.expectMsgPF(TestKit.scala:969)
+3281769-[info]   at org.ergoplatform.mining.CandidateGeneratorSpec$$anon$5.<init>(CandidateGeneratorSpec.scala:297)
+3281770-[info]   at org.ergoplatform.mining.CandidateGeneratorSpec.$anonfun$new$6(CandidateGeneratorSpec.scala:277)
+3281771-[info]   at org.scalatest.OutcomeOf.outcomeOf(OutcomeOf.scala:85)
+3281772-[default-critical-dispatcher-5] >> [ERROR] o.e.mining.CandidateGenerator >> 14:51:44.324 Attempted candidate generator restart due to null
+3281773-java.util.NoSuchElementException: null
+3281774-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+3281775-	at scala.Option.getOrElse(Option.scala:189)
+--
+11540911:[info] - should accept solution for previous candidate after regeneration *** FAILED ***
+11540912-[default-akka.actor.default-dispatcher-4] >> [ERROR] akka.actor.OneForOneStrategy >> 14:51:55.420 null
+11540913-java.util.NoSuchElementException: null
+11540914-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+11540915-	at scala.Option.getOrElse(Option.scala:189)
+11540916-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+11540917-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+11540918-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+11540919-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+11540920-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+11540921-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+11540922-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+11540923-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+--
+22239707:[info] - should pool transactions should be removed from pool when block is mined *** FAILED ***
+22239708-[default-critical-dispatcher-6] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:06.486 Attempted candidate generator restart due to null
+22239709-java.util.NoSuchElementException: null
+22239710-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+22239711-	at scala.Option.getOrElse(Option.scala:189)
+22239712-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+22239713-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+22239714-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+22239715-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+22239716-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+22239717-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+22239718-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+22239719-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+--
+24186343:[info] - should 6.0 pool transactions should be added to 6.0 block *** FAILED ***
+24186344-[info]   java.lang.AssertionError: assertion failed: received unexpected message RealMessage(LocalBlockApplied(Header({"extensionId":"96d1a82d4bcf34f9b2e263105da3d300d36dc3e53be068cac257dce1b5c6c847","difficulty":"1","votes":"000000","timestamp":1793739128550,"size":283,"unparsedBytes":"","stateRoot":"2d05d44ac7116e779c6e6dae03c729d554cbfa930585949fea8eb44e5460c79a03","height":1,"nBits":16842752,"version":1,"id":"41f46424fac5c855d3a541c1b2ffc6e5fa80d864074cd0b6f96639a5eac68f75","adProofsRoot":"f63e21b6381054f34f7f2d16d53c7303bae46d8904a861fbceadf718f96a4d11","transactionsRoot":"c8d49a9fd069786d88b9eaa12e6d14c99c0812768498ddef319b8c8798b27086","extensionHash":"813a86f1843b058f8c35e924df8b6ec8aa788f6e495c76bcaaea5915512e6be5","powSolutions":{"pk":"038b0f29a60fa8d7e1aeafbe512288a6c6bc696547bbf8247db23c95e83014513c","w":"02e1942dc0513e9b565a883f745662ee027eb17d96bdb9505aa5d77b7ec403c231","n":"0000000000000000","d":10526553567028745038506453182607991622985233116279536762055014831047105590394},"adProofsId":"4aa3f6ae0375313792a9512da1d6090bd9f66a3a2cfdcd0021d2b6beb74cc79e","transactionsId":"a7bf44290f64dc8b103f623141e5ac81be495064757e211ad3f4607bdcf0661e","parentId":"0000000000000000000000000000000000000000000000000000000000000000"}),ArrayBuffer(3f237341e20f38d03a684ac24df3bb43217034ab0036ed77f39728e341409ee5)),Actor[akka://default/deadLetters]) after 0 millis
+24186345-[default-critical-dispatcher-9] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:08.792 Attempted candidate generator restart due to null
+24186346-java.util.NoSuchElementException: null
+24186347-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+24186348-	at scala.Option.getOrElse(Option.scala:189)
+24186349-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+24186350-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+24186351-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+24186352-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+24186353-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+24186354-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+24186355-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+--
+32369372:[info] - should use custom miner public key when provided via optPk *** FAILED ***
+32369373-[default-critical-dispatcher-8] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:17.848 Attempted candidate generator restart due to null
+32369374-java.util.NoSuchElementException: null
+32369375-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+32369376-	at scala.Option.getOrElse(Option.scala:189)
+32369377-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+32369378-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+32369379-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+32369380-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+32369381-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+32369382-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+32369383-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+32369384-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+--
+42081349:[info] - should use default minerPk when optPk is None *** FAILED ***[default-critical-dispatcher-7] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:26.901 Attempted candidate generator restart due to null
+42081350-java.util.NoSuchElementException: null
+42081351-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+42081352-	at scala.Option.getOrElse(Option.scala:189)
+42081353-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+42081354-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+42081355-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+42081356-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+42081357-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+42081358-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+42081359-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+42081360-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+42081361-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+--
+53009982:[info] - should generate different candidates for different optPk values *** FAILED ***[default-critical-dispatcher-7] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:35.955 Attempted candidate generator restart due to null
+53009983-java.util.NoSuchElementException: null
+53009984-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+53009985-	at scala.Option.getOrElse(Option.scala:189)
+53009986-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+53009987-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+53009988-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+53009989-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+53009990-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+53009991-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+53009992-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+53009993-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+53009994-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+--
+64914828:[info] - should handle optPk with empty transactions *** FAILED ***
+64914829-[default-critical-dispatcher-9] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:45.015 Attempted candidate generator restart due to null
+64914830-java.util.NoSuchElementException: null
+64914831-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+64914832-	at scala.Option.getOrElse(Option.scala:189)
+64914833-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+64914834-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+64914835-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+64914836-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+64914837-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+64914838-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+64914839-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+64914840-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+--
+70329617:[info] - should preserve previous candidate when forced regeneration occurs *** FAILED ***
+70329618-[info]   java.lang.AssertionError: assertion failed: expected:  but got unexpected message LocalBlockApplied(Header({"extensionId":"ffc087b344fa334731bde373bbb4ee8d5ea77fe0db26a5f217e3b99c364a24de","difficulty":"1","votes":"000000","timestamp":1793739169323,"size":283,"unparsedBytes":"","stateRoot":"2d05d44ac7116e779c6e6dae03c729d554cbfa930585949fea8eb44e5460c79a03","height":1,"nBits":16842752,"version":1,"id":"eb0cb68049dfaf566ea158aca18651023ac4a9a73641923b8d59381899be534e","adProofsRoot":"f63e21b6381054f34f7f2d16d53c7303bae46d8904a861fbceadf718f96a4d11","transactionsRoot":"c8d49a9fd069786d88b9eaa12e6d14c99c0812768498ddef319b8c8798b27086","extensionHash":"813a86f1843b058f8c35e924df8b6ec8aa788f6e495c76bcaaea5915512e6be5","powSolutions":{"pk":"038b0f29a60fa8d7e1aeafbe512288a6c6bc696547bbf8247db23c95e83014513c","w":"036fc80c005b540f4cd2d9e5bb5b1b5caf8bf51dfd53742deaed35249020f658a5","n":"0000000000000000","d":10526553567028745038506453182607991622985233116279536762055014831047105590394},"adProofsId":"c527ecf0ec6b1329370e8433e8da7864152fc2c2d4ee8d0071a21fd5ab49a193","transactionsId":"6f4cd09a2f3326e38e447eb52b03b4ca224012ac01e505e3db6e582bd8e798d9","parentId":"0000000000000000000000000000000000000000000000000000000000000000"}),ArrayBuffer(3f237341e20f38d03a684ac24df3bb43217034ab0036ed77f39728e341409ee5))
+70329619-[info]   at scala.Predef$.assert(Predef.scala:223)
+70329620-[info]   at akka.testkit.TestKitBase.expectMsgPF(TestKit.scala:478)
+70329621-[info]   at akka.testkit.TestKitBase.expectMsgPF$(TestKit.scala:474)
+70329622-[info]   at akka.testkit.TestKit.expectMsgPF(TestKit.scala:969)
+70329623-[default-critical-dispatcher-7] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:49.348 Attempted candidate generator restart due to null
+70329624-java.util.NoSuchElementException: null
+70329625-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+70329626-	at scala.Option.getOrElse(Option.scala:189)
+70329627-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+70329628-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+70329629-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+--
+72935092:[info] - should handle multiple consecutive forced regenerations correctly *** FAILED ***
+72935093-[default-akka.actor.default-dispatcher-6] >> [ERROR] akka.actor.OneForOneStrategy >> 14:52:51.497 null
+72935094-java.util.NoSuchElementException: null
+72935095-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+72935096-	at scala.Option.getOrElse(Option.scala:189)
+72935097-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+72935098-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+72935099-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+72935100-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+72935101-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+72935102-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+72935103-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+72935104-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+--
+78512370:[info] - should accept solution for previous candidate after forced regeneration triggered by mempool *** FAILED ***
+78512371-[default-critical-dispatcher-5] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:55.984 Attempted candidate generator restart due to null
+78512372-java.util.NoSuchElementException: null
+78512373-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+78512374-	at scala.Option.getOrElse(Option.scala:189)
+78512375-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+78512376-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+78512377-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+78512378-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+78512379-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+78512380-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+78512381-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+78512382-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+--
+81243630:[info] - should correctly complete input block from candidate and solution *** FAILED ***
+81243631-[default-critical-dispatcher-5] >> [ERROR] o.e.mining.CandidateGenerator >> 14:52:58.049 Attempted candidate generator restart due to null
+81243632-java.util.NoSuchElementException: null
+81243633-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+81243634-	at scala.Option.getOrElse(Option.scala:189)
+81243635-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+81243636-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+81243637-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+81243638-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+81243639-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+81243640-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+81243641-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+81243642-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+--
+87958655:[info] - should recover with a filled candidate when proof generation fails once *** FAILED ***
+87958656-[default-akka.actor.default-dispatcher-10] >> [ERROR] akka.actor.OneForOneStrategy >> 14:53:03.852 null
+87958657-java.util.NoSuchElementException: null
+87958658-	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+87958659-	at scala.Option.getOrElse(Option.scala:189)
+87958660-	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+87958661-	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+87958662-	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+87958663-	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+87958664-	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+87958665-	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.left(ProxyInternalProverNode.scala:27)
+87958666-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:391)
+87958667-	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+
+### tail -300
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-critical-dispatcher-9] >> [ERROR] o.e.mining.CandidateGenerator >> 14:53:04.448 Attempted candidate generator restart due to null
+java.util.NoSuchElementException: null
+	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+	at scala.Option.getOrElse(Option.scala:189)
+	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.walk$1(BatchAVLProver.scala:343)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.treeWalk(BatchAVLProver.scala:348)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.unauthenticatedLookup(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById(UtxoStateReader.scala:127)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById$(UtxoStateReader.scala:126)
+	at org.ergoplatform.nodeView.state.UtxoState.boxById(UtxoState.scala:36)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.$anonfun$emissionBoxOpt$1(UtxoStateReader.scala:124)
+	at scala.Option.flatMap(Option.scala:271)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt$(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:952)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$1(CandidateGenerator.scala:489)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$1(CandidateGenerator.scala:488)
+	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$1(CandidateGenerator.scala:495)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:497)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-akka.actor.default-dispatcher-10] >> [ERROR] akka.actor.OneForOneStrategy >> 14:53:04.448 null
+java.util.NoSuchElementException: null
+	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+	at scala.Option.getOrElse(Option.scala:189)
+	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.walk$1(BatchAVLProver.scala:343)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.treeWalk(BatchAVLProver.scala:348)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.unauthenticatedLookup(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById(UtxoStateReader.scala:127)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById$(UtxoStateReader.scala:126)
+	at org.ergoplatform.nodeView.state.UtxoState.boxById(UtxoState.scala:36)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.$anonfun$emissionBoxOpt$1(UtxoStateReader.scala:124)
+	at scala.Option.flatMap(Option.scala:271)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt$(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:952)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$1(CandidateGenerator.scala:489)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$1(CandidateGenerator.scala:488)
+	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$1(CandidateGenerator.scala:495)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:497)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-critical-dispatcher-7] >> [ERROR] o.e.mining.CandidateGenerator >> 14:53:04.448 Attempted candidate generator restart due to null
+java.util.NoSuchElementException: null
+	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+	at scala.Option.getOrElse(Option.scala:189)
+	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.walk$1(BatchAVLProver.scala:343)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.treeWalk(BatchAVLProver.scala:348)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.unauthenticatedLookup(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById(UtxoStateReader.scala:127)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById$(UtxoStateReader.scala:126)
+	at org.ergoplatform.nodeView.state.UtxoState.boxById(UtxoState.scala:36)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.$anonfun$emissionBoxOpt$1(UtxoStateReader.scala:124)
+	at scala.Option.flatMap(Option.scala:271)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt$(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:952)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$1(CandidateGenerator.scala:489)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$1(CandidateGenerator.scala:488)
+	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$1(CandidateGenerator.scala:495)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:497)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-critical-dispatcher-8] >> [ERROR] o.e.mining.CandidateGenerator >> 14:53:04.448 Attempted candidate generator restart due to null
+java.util.NoSuchElementException: null
+	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+	at scala.Option.getOrElse(Option.scala:189)
+	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.walk$1(BatchAVLProver.scala:343)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.treeWalk(BatchAVLProver.scala:348)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.unauthenticatedLookup(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById(UtxoStateReader.scala:127)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById$(UtxoStateReader.scala:126)
+	at org.ergoplatform.nodeView.state.UtxoState.boxById(UtxoState.scala:36)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.$anonfun$emissionBoxOpt$1(UtxoStateReader.scala:124)
+	at scala.Option.flatMap(Option.scala:271)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt$(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:952)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$1(CandidateGenerator.scala:489)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$1(CandidateGenerator.scala:488)
+	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$1(CandidateGenerator.scala:495)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:497)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-akka.actor.default-dispatcher-11] >> [ERROR] akka.actor.OneForOneStrategy >> 14:53:04.448 null
+java.util.NoSuchElementException: null
+	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+	at scala.Option.getOrElse(Option.scala:189)
+	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.walk$1(BatchAVLProver.scala:343)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.treeWalk(BatchAVLProver.scala:348)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.unauthenticatedLookup(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById(UtxoStateReader.scala:127)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById$(UtxoStateReader.scala:126)
+	at org.ergoplatform.nodeView.state.UtxoState.boxById(UtxoState.scala:36)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.$anonfun$emissionBoxOpt$1(UtxoStateReader.scala:124)
+	at scala.Option.flatMap(Option.scala:271)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt$(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:952)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$1(CandidateGenerator.scala:489)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$1(CandidateGenerator.scala:488)
+	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$1(CandidateGenerator.scala:495)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:497)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-akka.actor.default-dispatcher-11] >> [ERROR] akka.actor.OneForOneStrategy >> 14:53:04.448 null
+java.util.NoSuchElementException: null
+	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+	at scala.Option.getOrElse(Option.scala:189)
+	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.walk$1(BatchAVLProver.scala:343)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.treeWalk(BatchAVLProver.scala:348)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.unauthenticatedLookup(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById(UtxoStateReader.scala:127)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById$(UtxoStateReader.scala:126)
+	at org.ergoplatform.nodeView.state.UtxoState.boxById(UtxoState.scala:36)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.$anonfun$emissionBoxOpt$1(UtxoStateReader.scala:124)
+	at scala.Option.flatMap(Option.scala:271)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt$(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:952)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$1(CandidateGenerator.scala:489)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$1(CandidateGenerator.scala:488)
+	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$1(CandidateGenerator.scala:495)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:497)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[default-critical-dispatcher-7] >> [ERROR] o.e.mining.CandidateGenerator >> 14:53:04.448 Attempted candidate generator restart due to null
+java.util.NoSuchElementException: null
+	at scorex.db.LDBVersionedStore.$anonfun$apply$1(LDBVersionedStore.scala:81)
+	at scala.Option.getOrElse(Option.scala:189)
+	at scorex.db.KVStoreReader.getOrElse(KVStoreReader.scala:71)
+	at scorex.db.KVStoreReader.getOrElse$(KVStoreReader.scala:70)
+	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:29)
+	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:81)
+	at scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage$.fetch(VersionedLDBAVLStorage.scala:183)
+	at scorex.crypto.authds.avltree.batch.ProxyInternalProverNode.right(ProxyInternalProverNode.scala:34)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.internalNodeFn$3(BatchAVLProver.scala:393)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.$anonfun$unauthenticatedLookup$1$adapted(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.walk$1(BatchAVLProver.scala:343)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.treeWalk(BatchAVLProver.scala:348)
+	at scorex.crypto.authds.avltree.batch.BatchAVLProver.unauthenticatedLookup(BatchAVLProver.scala:400)
+	at scorex.crypto.authds.avltree.batch.PersistentBatchAVLProver.unauthenticatedLookup(PersistentBatchAVLProver.scala:21)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById(UtxoStateReader.scala:127)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.boxById$(UtxoStateReader.scala:126)
+	at org.ergoplatform.nodeView.state.UtxoState.boxById(UtxoState.scala:36)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.$anonfun$emissionBoxOpt$1(UtxoStateReader.scala:124)
+	at scala.Option.flatMap(Option.scala:271)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoStateReader.emissionBoxOpt$(UtxoStateReader.scala:124)
+	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:36)
+	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:952)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$1(CandidateGenerator.scala:489)
+	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$1(CandidateGenerator.scala:488)
+	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$1(CandidateGenerator.scala:495)
+	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:497)
+	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$1.applyOrElse(CandidateGenerator.scala:201)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:49)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:577)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+[info] Run completed in 1 minute, 40 seconds.
+[info] Total number of tests run: 22
+[info] Suites: completed 1, aborted 0
+[info] Tests: succeeded 8, failed 14, canceled 0, ignored 0, pending 0
+[info] *** 14 TESTS FAILED ***
+[error] Failed tests:
+[error] 	org.ergoplatform.mining.CandidateGeneratorSpec
+[error] (Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 102 s (0:01:42.0), completed Nov 3, 2026, 2:53:04 PM
+### top repeated line shapes (sample: lines 1,000,000-1,200,000, timestamps stripped)
+   4874 	at org.ergoplatform.nodeView.state.UtxoState.emissionBoxOpt(UtxoState.scala:N)
+   4874 	at org.ergoplatform.mining.CandidateGenerator.aroundReceive(CandidateGenerator.scala:N)
+   4874 	at org.ergoplatform.mining.CandidateGenerator$.hasAnyMemPoolOrMinerTx$N(CandidateGenerator.scala:N)
+   4874 	at org.ergoplatform.mining.CandidateGenerator$.generateCandidate(CandidateGenerator.scala:N)
+   4874 	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$N(CandidateGenerator.scala:N)
+   4874 	at org.ergoplatform.mining.CandidateGenerator$.emissionTxOpt$lzycompute$N(CandidateGenerator.scala:N)
+   4874 	at org.ergoplatform.mining.CandidateGenerator$.collectEmission(CandidateGenerator.scala:N)
+   4874 	at org.ergoplatform.mining.CandidateGenerator$$anonfun$org$ergoplatform$mining$CandidateGenerator$$initialized$N.applyOrElse(CandidateGenerator.scala:N)
+   4874 	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:N)
+   4874 	at akka.actor.ActorCell.invoke(ActorCell.scala:N)
+   4874 	at akka.actor.Actor.aroundReceive(Actor.scala:N)
+   4874 	at akka.actor.Actor.aroundReceive$(Actor.scala:N)
+   4873 java.util.NoSuchElementException: null
+   4873 	at scorex.db.LDBVersionedStore.getOrElse(LDBVersionedStore.scala:N)
+   4873 	at scorex.db.LDBVersionedStore.apply(LDBVersionedStore.scala:N)
