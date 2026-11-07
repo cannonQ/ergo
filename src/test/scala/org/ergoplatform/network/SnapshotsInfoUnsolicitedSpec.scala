@@ -29,7 +29,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContextExecutor}
 
 /**
-  * Phase 2b-1 (hardening group, PASS-A CF-2) regression spec, v6.0.11 @ f758780e1.
+  * Regression spec, v6.0.11 @ f758780e1.
   *
   * `processSnapshotsInfo` (ErgoNodeViewSynchronizer.scala:1018-1040) is reached from the message handler
   * (:1806-1807) for a `SnapshotsInfo` from any peer. It has no request check (there is no "requested" state for
@@ -46,7 +46,7 @@ import scala.concurrent.{Await, ExecutionContextExecutor}
   * per-pair error line of :1035 (one line per mismatching pair means one lookup per pair). The fixture exposes no
   * mismatch counter, so the log is the handler-ran signal. Cost is not measured.
   *
-  * Fix shape (Review A, F-6): a bootstrap gate alone (`utxoBootstrap && fullBlockHeight == 0`) turns only case B
+  * Fix shape: a bootstrap gate alone (`utxoBootstrap && fullBlockHeight == 0`) turns only case B
   * green; case A runs with utxoBootstrap on and a headers-only history, so it stays RED. The fix needs a per-peer
   * request marker set in `requestSnapshotsInfo` (:667-677) and checked first in `processSnapshotsInfo`.
   *
@@ -180,7 +180,7 @@ class SnapshotsInfoUnsolicitedSpec extends AnyPropSpec with Matchers with FileUt
   }
 
   /*
-   * 3-1 SnapshotsInfo growth variant (Review A F-4, register candidate SNAP-2), v6.0.11 @ f758780e1.
+   * SnapshotsInfo growth variant, v6.0.11 @ f758780e1.
    *
    * Claim: a node that is not bootstrapping (utxoBootstrap off) and sent no GetSnapshotsInfo still records the
    * offers of an unsolicited SnapshotsInfo. In `processSnapshotsInfo` the comparison is
@@ -229,7 +229,7 @@ class SnapshotsInfoUnsolicitedSpec extends AnyPropSpec with Matchers with FileUt
     }
   }
 
-  property("3-1 growth: unsolicited SnapshotsInfo with matching ids is not recorded on a non-bootstrapping node " +
+  property("growth: unsolicited SnapshotsInfo with matching ids is not recorded on a non-bootstrapping node " +
     "(utxoBootstrap off; RED at pin: offers recorded)") {
     val logger = LoggerFactory.getLogger(classOf[ErgoNodeViewSynchronizer]).asInstanceOf[Logger]
     val previousLevel = logger.getLevel
