@@ -2316,6 +2316,58 @@ class ErgoNodeViewSynchronizerSpecification extends AnyPropSpec
   }
 
   /**
+   * Regression Test Claim:
+   * A requested transaction whose serialized size is just over the configured per-transaction 
+   * byte limit must be rejected at admission (i.e., not added to `txProcessingCache`), 
+   * rather than being cached first and checked later during deferred processing.
+   * 
+   * - Red on current code: The over-budget transaction is placed into `txProcessingCache` during 
+   *   `transactionsFromRemote` before the byte limit check runs, resulting in a non-zero cache size.
+   * - Green with the fix: The byte limit check is evaluated at admission, preventing the over-budget 
+   *   transaction from entering `txProcessingCache`.
+   */
+  property("NodeViewSynchronizer: transaction just over the byte limit is rejected at admission and not cached") {
+    withDeclinedTransactionsFixture { ctx =>
+      import ctx._
+
+      val peer = newPeer
+
+      // Determine the maximum allowed transaction size from settings
+      val maxTxSize = settings.nodeSettings.maxTransactionSize
+
+      // Prepare a normal transaction (to occupy the immediate processing slot) 
+      // and an over-budget transaction (which would otherwise land in the cache)
+      val normalTx = dummyDeclinedTx() // or dummyDeclinedTx() based on fixture naming
+      val overBudgetTx = dummyDeclinedTx()
+      
+      // Construct payload just 1 byte over the permitted limit
+      val overBudgetBytes = new Array[Byte](maxTxSize.toInt + 1)
+
+      // Announce both transactions and expect requests for them
+      invTxAndExpectRequest(peer, normalTx)
+      invTxAndExpectRequest(peer, overBudgetTx)
+
+      // Deliver both in a single batch: normalTx goes to process, overBudgetTx goes to cache
+      val modData = ModifiersData(
+        ErgoTransaction.modifierTypeId, 
+        Map(
+          normalTx.id -> normalTx.bytes,
+          overBudgetTx.id -> overBudgetBytes
+        )
+      )
+      
+      synchronizerRef ! Message(ModifiersSpec, Left(ModifiersSpec.toBytes(modData)), Some(peer))
+
+      // Assert: The over-budget transaction must NOT be admitted into the txProcessingCache.
+      // - Current code: Fails because overBudgetTx enters the cache (size will be 1).
+      // - Fixed code: Passes because the admission check drops it before caching (size remains 0).
+      // barrier: the response to this inv proves that the delivery above is fully processed
+      invTxAndExpectRequest(peer, dummyDeclinedTx())
+      synchronizerTestRef.underlyingActor.txProcessingCacheSize shouldBe 0
+    }
+  }
+
+  /**
     * The declined transactions table is a de-duplication cache: re-adding an id which is already in the full
     * table must not evict another entry (which would forget a declined transaction for no reason).
     */
