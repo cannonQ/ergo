@@ -15,6 +15,7 @@ import org.ergoplatform.nodeView.state.{SnapshotsInfo, StateType, UtxoState}
 import org.ergoplatform.nodeView.state.UtxoState.ManifestId
 import org.ergoplatform.settings.{ErgoSettings, UtxoSettings}
 import org.ergoplatform.wallet.utils.FileUtils
+import scorex.crypto.authds.avltree.batch.VersionedLDBAVLStorage.splitDigest
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.propspec.AnyPropSpec
 import org.slf4j.LoggerFactory
@@ -175,6 +176,85 @@ class SnapshotsInfoUnsolicitedSpec extends AnyPropSpec with Matchers with FileUt
       "\nAn unsolicited SnapshotsInfo ran one bestHeaderAtHeight lookup + one error line per pair and got no " +
         "PenalizePeer: a request check (or utxoBootstrap gate) before the loop, or a penalty, is MISSING.\n")) {
       results.forall(_.desired) shouldBe true
+    }
+  }
+
+  /*
+   * 3-1 SnapshotsInfo growth variant (Review A F-4, register candidate SNAP-2), v6.0.11 @ f758780e1.
+   *
+   * Claim: a node that is not bootstrapping (utxoBootstrap off) and sent no GetSnapshotsInfo still records the
+   * offers of an unsolicited SnapshotsInfo. In `processSnapshotsInfo` the comparison is
+   * `hr.bestHeaderAtHeight(height).map(_.stateRoot).map(splitDigest(_)._1)` against the offered id (:1023-1024;
+   * `splitDigest` = `digest.dropRight(1) -> digest.last`, VersionedLDBAVLStorage.scala:249-250, so the id is the
+   * first 32 bytes of the 33-byte state root). On a match it logs INFO "Found new manifest <id> for height <h> at
+   * <peer>" (:1029) and puts the offer into `availableManifests` (:1030). That loop is not gated on utxoBootstrap
+   * (only `checkUtxoSetManifests`, :1039/:1575, is), and the map is cleared only at :1067 on a bootstrapping node.
+   *
+   * Input: one SnapshotsInfo, 8 pairs, heights 1..8, ids derived from the fixture history with the handler's own
+   * expression (so they match). Time cap: the probe wait is 4 s max per message, well under 10 s.
+   * Observable: "Found new manifest" INFO lines for the sender on the ListAppender (`availableManifests` is a
+   * `private val` of the actor, created with system.actorOf, so it is not readable from the test; the log is the signal).
+   * Anti-vacuous control in the same property: zero "Got wrong manifest id" lines for this message. If a derived id
+   * did not match, the handler would log an error for it and the property fails on the control, not on the claim.
+   *
+   * RED at pin: Found-new-manifest lines > 0, the offers were recorded on a non-bootstrapping node.
+   * GREEN: zero Found lines and zero wrong-id lines, the offers were not recorded (dropped, or never compared).
+   */
+  @SuppressWarnings(Array("org.wartremover.warts.OptionPartial"))
+  private def runGrowthCase(appender: ListAppender[ILoggingEvent]): (Int, Int, Int, Int, Int) = {
+    val f = new Fixture(utxoBootstrap = false)
+    try {
+      import f._
+      val peerAddr = peer.connectionId.remoteAddress
+      val manifests: Map[Int, ManifestId] = (1 to Pairs).map { h =>
+        h -> (Digest32 @@ splitDigest(updHistory.bestHeaderAtHeight(h).get.stateRoot)._1)
+      }.toMap
+      val distinctIds = manifests.values.map(id => scorex.util.encode.Base16.encode(id)).toSet.size
+      val bytes = SnapshotsInfoSpec.toBytes(new SnapshotsInfo(manifests))
+
+      appender.list.clear()
+      synchronizerRef ! Message(SnapshotsInfoSpec, Left(bytes), Some(peer))
+      val sent = ncProbe.receiveWhile(max = 4.seconds, idle = 1500.millis) { case m => m }
+      val getInfoSent = sent.collect { case s: SendToNetwork => s }
+        .count(_.message.spec.messageCode == GetSnapshotsInfoSpec.messageCode)
+
+      def count(level: Level, text: String): Int = appender.list.asScala.count { e =>
+        val m = e.getFormattedMessage
+        e.getLevel == level && m.contains(text) && m.contains(peerAddr.toString)
+      }
+      (getInfoSent, distinctIds, count(Level.INFO, "Found new manifest"),
+        count(Level.WARN, "Double manifest declaration"), count(Level.ERROR, "Got wrong manifest id"))
+    } finally {
+      Await.result(f.system.terminate(), Duration.Inf)
+    }
+  }
+
+  property("3-1 growth: unsolicited SnapshotsInfo with matching ids is not recorded on a non-bootstrapping node " +
+    "(utxoBootstrap off; RED at pin: offers recorded)") {
+    val logger = LoggerFactory.getLogger(classOf[ErgoNodeViewSynchronizer]).asInstanceOf[Logger]
+    val previousLevel = logger.getLevel
+    val appender = new ListAppender[ILoggingEvent]
+    appender.start()
+    logger.addAppender(appender)
+    logger.setLevel(Level.INFO)
+    val (getInfoSent, distinctIds, foundLines, doubleLines, wrongLines) = try {
+      runGrowthCase(appender)
+    } finally {
+      logger.detachAppender(appender)
+      logger.setLevel(previousLevel)
+      appender.stop()
+    }
+    val summary = s"[growth: utxoBootstrap=off, no GetSnapshotsInfo sent] pairs=$Pairs, distinct ids=$distinctIds, " +
+      s"GetSnapshotsInfo sent by node=$getInfoSent, 'Found new manifest' lines=$foundLines, " +
+      s"'Double manifest declaration' lines=$doubleLines, 'Got wrong manifest id' lines=$wrongLines"
+
+    withClue(s"precondition/control: $summary\n") {
+      getInfoSent shouldBe 0
+      wrongLines shouldBe 0 // control: every derived id matched the handler's comparison (:1023-1024)
+    }
+    withClue(s"$summary\nAn unsolicited SnapshotsInfo with matching ids was recorded (availableManifests.put, :1030) " +
+      "on a node with utxoBootstrap off: a bootstrap gate / request check before the loop is MISSING.\n") {
+      foundLines shouldBe 0
     }
   }
 }
