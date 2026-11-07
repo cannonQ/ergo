@@ -4,7 +4,8 @@ package scorex.core.network
 // InboundMessageProcessed exists. Merged: 17 header replies arrive in one Tcp.Received, the handler forwards 16 and
 // pauses, the silent view holder never acks, so item 17 stays Requested and must be re-requested from peer B after
 // the 1 s delivery timeout. Pin: all 17 are read at once, item 17 is Received and nothing is re-requested.
-// GREEN on a tree = the review's prediction holds there; RED = F-1 is wrong (or the harness did not reach the state).
+// GREEN on a tree = that tree's prediction holds (merged: item 17 stays Requested and is re-requested from B; pin: item 17 Received, nothing re-requested);
+// it settles the NARROW claim (an already-sent, unread reply stays Requested past the deadline and is re-requested), not the penalty claim.
 import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.io.Tcp
 import akka.testkit.{TestActorRef, TestProbe}
@@ -22,7 +23,7 @@ import org.ergoplatform.settings.ErgoSettings
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.propspec.AnyPropSpec
 import scorex.core.app.ScorexContext
-import scorex.core.network.NetworkController.ReceivableMessages.SendToNetwork
+import scorex.core.network.NetworkController.ReceivableMessages.{PenalizePeer, SendToNetwork}
 import scorex.testkit.utils.AkkaFixture
 import scorex.util.ModifierId
 
@@ -132,9 +133,20 @@ class ReadPauseDeliveryTimeoutSpec extends AnyPropSpec with Matchers {
       val peerB = ConnectedPeer(connectionIdGen.sample.get, pchB.ref, Some(PeerInfo(specB, System.currentTimeMillis())))
       syncTracker.updateStatus(peerB, org.ergoplatform.consensus.Older, Some(1000))
 
-      // 17 single-header requests to A, then drain the synchronizer's outgoing request messages
+      // 17 single-header requests to A. akka.test.timefactor = 3 dilates receiveWhile, so drain with nanoTime only,
+      // until all 17 request messages to A are seen; requestedAt is taken before the request is sent.
+      val requestedAt = System.nanoTime()
       sync ! RequestHeaders(headers.map(_.id), peerA)
-      ncProbe.receiveWhile(400.millis) { case m => m }
+      val drainDeadline = requestedAt + 3.seconds.toNanos
+      var requestsToA = 0
+      while (requestsToA < 17 && System.nanoTime() < drainDeadline) {
+        ncProbe.receiveOne(100.millis) match {
+          case SendToNetwork(msg, SendToPeer(to)) if to == peerA && msg.spec.messageCode == RequestModifierSpec.messageCode =>
+            requestsToA += 1
+          case _ =>
+        }
+      }
+      requestsToA shouldBe 17
       headers.foreach(hd => tracker.status(hd.id, Header.modifierTypeId, Seq.empty) shouldBe ModifiersStatus.Requested)
 
       // A answers all 17 requests in a single TCP read
@@ -147,20 +159,27 @@ class ReadPauseDeliveryTimeoutSpec extends AnyPropSpec with Matchers {
         ))
       }.reduce(_ ++ _)
       connectionA.send(handlerA, Tcp.Received(frames))
-
-      // observe for 1 s timeout + margin
       val sentAt = System.nanoTime()
+      // a slow harness must fail loudly: A's frames must arrive well inside the delivery timeout
+      (sentAt - requestedAt) should be < (netCfg.deliveryTimeout.toNanos / 2)
+
+      // observe for 1 s timeout + margin (nanoTime, not dilated)
       val deadline = sentAt + 3500.millis.toNanos
       val timed = Iterator.continually(ncProbe.receiveOne(100.millis)).takeWhile(_ => System.nanoTime() < deadline)
-        .collect { case m if m != null => ((System.nanoTime() - sentAt) / 1000000, m) }.toList
+        .collect { case m if m != null => (System.nanoTime(), m) }.toList
       val timedRequests = timed.collect {
         case (at, SendToNetwork(msg, SendToPeer(to))) if msg.spec.messageCode == RequestModifierSpec.messageCode =>
           msg.input match {
-            case Right(d: InvData) => (at, to, d.ids)
-            case _ => (at, to, Seq.empty[ModifierId])
+            case Right(d: InvData) => ((at - requestedAt) / 1000000, to, d.ids)
+            case _ => ((at - requestedAt) / 1000000, to, Seq.empty[ModifierId])
           }
       }
+      val penalties = timed.collect {
+        case (at, PenalizePeer(addr, t)) => ((at - requestedAt) / 1000000, addr, t)
+      }
+      val penaltiesForA = penalties.filter(_._2 == remoteA)
       val reRequests = timedRequests.map { case (_, to, ids) => (to, ids) }
+      // ms from the moment the request was sent (requestedAt)
       val firstReRequestMs = timedRequests.headOption.map(_._1)
       val connectionMsgs = connectionA.receiveWhile(300.millis) { case m => m }
       val item17 = headers.last.id
@@ -168,17 +187,26 @@ class ReadPauseDeliveryTimeoutSpec extends AnyPropSpec with Matchers {
       info(s"observed: tree=${if (treeHasInboundCredits) "merged" else "pin"} status(item17)=$status17 " +
         s"reRequests=${reRequests.map { case (to, ids) => (if (to == peerB) "B" else if (to == peerA) "A" else "?") -> ids.size }} " +
         s"item17ReRequestedTo=${reRequests.filter(_._2.contains(item17)).map { case (to, _) => if (to == peerB) "B" else "other" }} " +
-        s"firstReRequestMs=$firstReRequestMs allReRequestMs=${timedRequests.map(_._1)} " +
+        s"firstReRequestMsFromRequest=$firstReRequestMs allReRequestMs=${timedRequests.map(_._1)} " +
+        s"framesSentMs=${(sentAt - requestedAt) / 1000000} " +
+        s"penalizePeerA=${penaltiesForA.map(p => (p._1, p._3.getClass.getSimpleName))} " +
+        s"penalizePeerOther=${penalties.filterNot(_._2 == remoteA).size} " +
         s"connectionA=${connectionMsgs.map(_.getClass.getSimpleName)}")
 
       if (treeHasInboundCredits) {
+        connectionMsgs should contain (Tcp.SuspendReading)
+        headers.init.foreach(hd => tracker.status(hd.id, Header.modifierTypeId, Seq.empty) shouldBe ModifiersStatus.Received)
+        status17 shouldBe ModifiersStatus.Requested
         reRequests.exists { case (to, ids) => to == peerB && ids == Seq(item17) } shouldBe true
         reRequests.flatMap(_._2).toSet shouldBe Set(item17)
-        // not before the 1 s delivery timeout of the request, and not long after it
-        firstReRequestMs.exists(ms => ms >= 500 && ms <= 2000) shouldBe true
+        // first re-request, measured from the moment the request was sent, falls on the delivery timeout
+        firstReRequestMs.exists(ms => ms >= netCfg.deliveryTimeout.toMillis - 50 && ms <= netCfg.deliveryTimeout.toMillis + 1000) shouldBe true
+        // A answered inside its deadline, so it is not penalized before that first re-request
+        penaltiesForA.filter(p => firstReRequestMs.forall(p._1 <= _)) shouldBe empty
       } else {
         status17 shouldBe ModifiersStatus.Received
         reRequests shouldBe empty
+        penaltiesForA shouldBe empty
       }
     } finally {
       Await.result(fixture.system.terminate(), Duration.Inf)
