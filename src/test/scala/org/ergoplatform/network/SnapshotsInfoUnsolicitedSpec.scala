@@ -45,6 +45,10 @@ import scala.concurrent.{Await, ExecutionContextExecutor}
   * per-pair error line of :1035 (one line per mismatching pair means one lookup per pair). The fixture exposes no
   * mismatch counter, so the log is the handler-ran signal. Cost is not measured.
   *
+  * Fix shape (Review A, F-6): a bootstrap gate alone (`utxoBootstrap && fullBlockHeight == 0`) turns only case B
+  * green; case A runs with utxoBootstrap on and a headers-only history, so it stays RED. The fix needs a per-peer
+  * request marker set in `requestSnapshotsInfo` (:667-677) and checked first in `processSnapshotsInfo`.
+  *
   * RED at the pin means: no PenalizePeer and one error line per pair, in both cases.
   */
 class SnapshotsInfoUnsolicitedSpec extends AnyPropSpec with Matchers with FileUtils {

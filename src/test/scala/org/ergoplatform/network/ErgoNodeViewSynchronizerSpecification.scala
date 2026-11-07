@@ -2321,6 +2321,9 @@ class ErgoNodeViewSynchronizerSpecification extends AnyPropSpec
    * byte limit must be rejected at admission (i.e., not added to `txProcessingCache`), 
    * rather than being cached first and checked later during deferred processing.
    * 
+   * - Review note (Review A, F-9): the oversize record is rejected the first time it is used (:875-880), so in
+   *   steady state it stays cached for about one mempool round trip; minor. Worst case is about 410 MB node-wide
+   *   while drains are stalled.
    * - Red on current code: The over-budget transaction is placed into `txProcessingCache` during 
    *   `transactionsFromRemote` before the byte limit check runs, resulting in a non-zero cache size.
    * - Green with the fix: The byte limit check is evaluated at admission, preventing the over-budget 

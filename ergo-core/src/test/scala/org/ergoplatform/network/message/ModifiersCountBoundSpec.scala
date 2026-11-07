@@ -14,6 +14,12 @@ import scorex.util.serialization.VLQByteBufferWriter
   *         `Modifiers` message declaring more than 400 entries is never legitimate, yet the parser accepts it: with
   *         zero-length bodies up to ~256k entries fit under the 8 MB budget.
   *
+  * REVIEW NOTE (Review A, F-5): unsolicited Modifiers entries of type 2 (transactions) draw no penalty
+  *         (ErgoNodeViewSynchronizer.scala:939-946), so one connection can repeat this freely. The fix must be
+  *         `require(count <= InvSpec.maxInvObjects)` only: a zero-count Modifiers message is a deliberate
+  *         non-delivery signal (ModifiersSpec.scala:61-63) and must still parse, so do not copy InvSpec's
+  *         `require(count > 0)`. Same loop as open PR #2795.
+  *
   * DESIRED BOUND (what the one-line maintainer fix should add):
   *         `require(count <= InvSpec.maxInvObjects, ...)` (or an equivalent tight element cap) evaluated right after
   *         the count is read, before the entry loop.

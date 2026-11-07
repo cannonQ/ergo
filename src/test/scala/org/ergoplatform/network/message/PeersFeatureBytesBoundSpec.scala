@@ -16,6 +16,12 @@ import scorex.util.serialization.VLQByteBufferWriter
   *         the very same `PeerSpecSerializer.parse` with NO 8096-byte limit applied -- a PeerSpec is bounded only by
   *         the enclosing message frame. A single PeerSpec may carry up to 127 features of up to 32767 bytes each.
   *
+  * REVIEW NOTE (Review A, F-10): the feature here has an unknown id, so its bytes are copied and discarded and the
+  *         node holds about 1x the wire bytes, briefly. A retained-size story needs repeated known features and
+  *         overlaps KNOWN #2449. `candidate.take(8096)` is at PeerConnectionHandler.scala:109; HandshakeSerializer.scala:31
+  *         is only the `require`. A per-feature cap at or below 8096 or a per-PeerSpec check turns this green; a
+  *         whole-body cap on Peers does not.
+  *
   * DESIRED BOUND: a PeerSpec carried inside a `Peers` message that exceeds the handshake size limit (8096 bytes)
   *         should be rejected the same way it would be in the handshake path.
   *

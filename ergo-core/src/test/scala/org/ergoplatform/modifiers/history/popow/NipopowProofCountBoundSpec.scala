@@ -5,6 +5,11 @@ import scorex.util.ByteArrayBuilder
 import scorex.util.serialization.VLQByteBufferWriter
 
 /**
+  * SUPERSEDED per review (Review A, F-1): the claim is KNOWN upstream. Open PR #2461 (a-shannon) already adds
+  * `requireWithinLimit` on the prefix and suffix counts. The 100,000 fixture count is also above what the 2 MB
+  * sub-frame can hold (about 7.5k elements), so a no-op guard would turn this spec green. The property is
+  * `ignore`d; the original text follows unchanged.
+  *
   * S-NIP  (regression spec that asserts a MISSING numeric element-count cap on `NipopowProofSerializer`).
   *
   * CLAIM:  `NipopowProofSerializer.parse` (NipopowProof.scala:218-234) reads `prefixSize` (and `suffixSize`) as a
@@ -35,7 +40,7 @@ class NipopowProofCountBoundSpec extends ErgoCorePropertyTest {
   import org.ergoplatform.utils.generators.CoreObjectGenerators._
   import org.ergoplatform.utils.generators.ErgoCoreGenerators._
 
-  property("NipopowProof parser should reject an element count above a sane maximum (RED at pin: no count cap)") {
+  ignore("NipopowProof parser should reject an element count above a sane maximum (RED at pin: no count cap)") {
     val serializer = new NipopowProofSerializer(nipopowAlgos)
 
     // --- characterization: a small, structurally valid proof round-trips through the serializer ---

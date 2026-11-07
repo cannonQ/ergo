@@ -6,6 +6,11 @@ import scorex.util.ByteArrayBuilder
 import scorex.util.serialization.VLQByteBufferWriter
 
 /**
+  * SUPERSEDED per review (Review A, F-3): this spec is red only on the exception type. The guard it asks for
+  * (`txCount <= 10,000,000`) never fires, because at most about 2.05M transactions (4 bytes each) fit in the
+  * 8,194,304-byte section budget. The real exposure is the parsed-form amplification, which needs a heap
+  * measurement, not this spec. The property is `ignore`d; the original text follows unchanged.
+  *
   * S-BT  (regression spec that asserts a MISSING numeric transaction-count cap on `BlockTransactionsSerializer`).
   *
   * CLAIM:  `BlockTransactionsSerializer.parse` (BlockTransactions.scala:163-205) reads `txCount` (:166/:181) and
@@ -31,7 +36,7 @@ import scorex.util.serialization.VLQByteBufferWriter
 class BlockTransactionsCountBoundSpec extends ErgoCorePropertyTest {
   import org.ergoplatform.utils.generators.ErgoCoreTransactionGenerators._
 
-  property("BlockTransactions parser should reject a tx count above MaxTransactionsInBlock (RED at pin: no count cap)") {
+  ignore("BlockTransactions parser should reject a tx count above MaxTransactionsInBlock (RED at pin: no count cap)") {
     // --- characterization: a real, modest BlockTransactions round-trips through the serializer ---
     val bt = invalidBlockTransactionsGen.sample.get
     val roundTripped = BlockTransactionsSerializer.parseBytes(BlockTransactionsSerializer.toBytes(bt))
